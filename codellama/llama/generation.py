@@ -8,7 +8,6 @@ import time
 from pathlib import Path
 from typing import List, Literal, Optional, Tuple, TypedDict
 
-import gc
 import torch
 import torch.nn.functional as F
 from fairscale.nn.model_parallel.initialize import (
@@ -124,8 +123,6 @@ class Llama:
                 torch.set_default_tensor_type(torch.cuda.HalfTensor)
         else:
             torch.set_default_tensor_type(torch.HalfTensor)
-        gc.collect()
-        time.sleep(100)
         print("loading transformer model")
         model = Transformer(model_args)
         print("loaded transformer model")
