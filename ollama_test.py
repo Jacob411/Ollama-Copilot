@@ -1,8 +1,9 @@
 import ollama
-response = ollama.chat(model='llama3', messages=[
+response = ollama.chat(model='short_code', 
+    messages=[
   {
     'role': 'user',
-    'content': 'Why is the sky blue?',
+    'content': 'def fibonacci(',
   },
 ])
 print(response['message']['content'])
