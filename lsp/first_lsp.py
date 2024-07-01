@@ -2,6 +2,12 @@ from pygls.server import LanguageServer
 from lsprotocol import types
 
 server = LanguageServer("example-server", "v0.2")
+# textDocument/didChange
+@server.feature(types.TEXT_DOCUMENT_DID_CHANGE)
+def did_change(params : types.DidChangeTextDocumentParams):
+    with open("log.txt", "a") as f:
+        f.write(f"Document changed: {params}\n")
+
 # Create a new feature for the server for textDocument/didOpen
 @server.feature(types.TEXT_DOCUMENT_DID_OPEN)
 def did_open(params: types.DidOpenTextDocumentParams):
@@ -12,7 +18,6 @@ def did_open(params: types.DidOpenTextDocumentParams):
     print(params.text_document.text)
     print("\n")
     return None
-
 # Create a new feature for the server for textDocument/definition
 @server.feature(types.TEXT_DOCUMENT_DEFINITION)
 def definition(params: types.DefinitionParams):
@@ -39,17 +44,14 @@ def completions(params: types.CompletionParams):
     # Write to a log file if this hits
     with open("log.txt", "a") as f:
         f.write(f'Completing for: {current_line}\n')
-    print(f'Completing for: {current_line}\n')
-    if not current_line.endswith("hello."):
-        return [
-            types.CompletionItem(label="random_completion")
-        ]
 
     return [
-        types.CompletionItem(label="world"),
-        types.CompletionItem(label="friend"),
+        types.CompletionItem(label="Jacob testing out completion", kind=types.CompletionItemKind.Variable),
+
+        types.CompletionItem(label="strange_string_not_used_much", kind=types.CompletionItemKind.Variable),
     ]
 
 
 if __name__ == "__main__":
-    server.start_ws("localhost", 8080)
+    #server.start_ws("localhost", 8080)
+    server.start_io()

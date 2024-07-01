@@ -2,6 +2,7 @@ import json
 import asyncio
 import websockets
 import time
+
 init_request = {
         "jsonrpc": "2.0",
         "id": 1,
@@ -77,7 +78,6 @@ async def send_request(uri, request):
 async def main():
     uri = "ws://localhost:8080"  # Adjust the URI if necessary
 
-    file = "file:///home/jacob/repos/Llama-3/lsp/example.txt"  
     # 
     # response = await send_request(uri, init_request)
     # print(response)
@@ -93,6 +93,5 @@ async def main():
         print(response)
         time.sleep(2)
     
-    input
 if __name__ == "__main__":
     asyncio.run(main())

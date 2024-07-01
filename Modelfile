@@ -3,4 +3,3 @@ FROM codellama:7b-code
 TEMPLATE {{ .Prompt }}
 PARAMETER temperature 0.2
 PARAMETER num_predict 15
-
