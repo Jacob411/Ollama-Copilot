@@ -22,26 +22,66 @@ def load_data():
     X_train = torch.tensor(X_train, dtype=torch.float32)
     X_test = torch.tensor(X_test, dtype=torch.float32)
     y_train = torch.tensor(y_train, dtype=torch.int64)
-    y_test = torch.tensor(y_test, dtype=torch.int64)"""
+    y_test = torch.tensor(y_test, dtype=torch.int64)
+    # print length of y_test"""
 
 # def function that gets the plain text of a file from the dictionary
-def get_suggestion(lines, line, character):
+def get_suggestion(content):
     # Place fim hole at the cursor position
-    print("\n".join(lines))
+    
+
+    stream = ollama.chat(
+        model='deepseek-coder:base', 
+        messages=[{
+            'role': 'user',
+            'content': content,
+        }],
+        stream=True
+     )
+    return stream
+def place_fim(lines, line, character):
     lines[line] = lines[line][:character] + "<｜fim▁hole｜>" + lines[line][character:]
     text = "\n".join(lines)
     content = '<｜fim▁begin｜>' + text + '<｜fim▁end｜>'
-    print('<=====================>')
-    print(content)
-    print('<=====================>')
-    response = ollama.chat(model='deepseek-coder:base', 
-        messages=[{
+    return content 
+
+content = """#utils.py
+import torch
+# check if cuda is available"""
+
+client = ollama.Client(host='http://localhost:11434')
+
+stream = client.chat(
+    model='custom-deepseek', 
+    messages=[{
         'role': 'user',
         'content': content,
-      },])
-    return response["message"]["content"]
+    }],
+    stream=True
+)
+start = time.time()
+for chunk in stream:
+    print(chunk['message']['content'], end='', flush=True)
+print("\nTime taken: ", time.time()-start)
+print('<===========================>')
+# Run the same prompt through ten times, time it and print the average time 
+start = time.time()
+for i in range(10):
+    mid_time = time.time()
+    stream = client.chat(
+        model='custom-deepseek', 
+        messages=[{
+            'role': 'user',
+            'content': content,
+        }],
+        stream=True
+    )
+    for chunk in stream:
+        pass
+    print("Time taken: ", time.time()-mid_time)
+print("Average time taken: ", (time.time()-start)/10)
 
-suggestion = get_suggestion(content.split("\n"), 12, 5)
-print()
-print('SUGGESTION:')
-print(suggestion)
+
+
+
+

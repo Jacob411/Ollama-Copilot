@@ -1,2 +1,1285 @@
 Time: 12.649511337280273
 , Suggestion: \n
+Time: 21.458022356033325
+, Suggestion: ystem': 'deepseek-coder'
+Time: 2.3950464725494385
+, Suggestion: rue
+Time: 3.2509145736694336
+, Suggestion: eparator=False
+Time: 2.8438682556152344
+, Suggestion: rue
+Time: 6.010565996170044
+, Suggestion: uestions=[{
+
+            'role': 'user',
+
+            'content': content,
+
+        }],
+
+        
+Time: 3.06282114982605
+, Suggestion: 
+Time: 4.267302513122559
+, Suggestion: se
+Time: 17.84072232246399
+, Suggestion: uggestions = []
+
+    lines[line] += '$' + lines[line][character:]
+
+    for line in lines:
+
+        suggestion = ollama.chat(
+
+            model="deepseek-coder:base", 
+
+            messages=[{
+
+                'role': 0,
+
+                'content': content,
+
+            }],
+
+            stream=True
+
+        )["message"]["content"].split("$")[-1].strip() + "\n"
+
+        if not suggestion:
+
+            continue
+
+        suggestions.append(suggestion)
+
+    print('<=====================>')
+
+    for suggestion in suggestions:
+
+        print("\033[94m->", suggestion, "<-")
+
+        
+
+def get_code():
+
+    lines 
+Time: 4.938513994216919
+, Suggestion: "].replace("'", "").strip() + '\n
+Time: 1.8035061359405518
+, Suggestion: s"]
+Time: 2.7019450664520264
+, Suggestion: s.choices(stream)[0]["message"]['content']
+Time: 1.9537363052368164
+, Suggestion: tream
+Time: 1.1677114963531494
+, Suggestion: ns
+Time: 1.9623196125030518
+, Suggestion: '])
+Time: 2.9574668407440186
+, Suggestion: ["message"]["content"])
+
+    
+
+# Remove fim hole at the cursor position
+
+lines  [line] = lines[line][:character]
+Time: 6.203899383544922
+, Suggestion: (message['content'])
+
+    lines = content.split("\n")
+
+    character = 0
+
+    for i, line in enumerate(lines):
+
+        if len(line)-1 <= character:
+
+            break
+
+        character += 1
+
+        if message['content'][i] == '<':
+
+            character -= 1
+Time: 2.5074989795684814
+, Suggestion: :
+
+    print (message['content'])
+
+    if message['role'] == 'assistant':
+
+        break
+Time: 1.1422622203826904
+, Suggestion:  stream:
+
+    print(message['content'])
+Time: 1.9866845607757568
+, Suggestion:  in stream:
+
+     # Print the response to stdout
+
+    print(">", message['content'])
+Time: 3.596881866455078
+, Suggestion: hoice in stream:
+
+    print("{}\n".format(choice["content"]))
+
+    if choice["choices"]:
+
+        suggestion = choice['choices'][0]
+
+        text = 
+Time: 1.364109754562378
+, Suggestion: e-3)
+Time: 0.6371660232543945
+, Suggestion: (0.3)
+Time: 0.7318346500396729
+, Suggestion: .sleep(0.3)
+Time: 2.9824090003967285
+, Suggestion: '])
+
+    # Print the suggestion to screen if it is not from a bot or if this is the last chunk of text.
+
+    lines 
+
+    = content.split("\n")
+Time: 0.9643287658691406
+, Suggestion: '])
+
+    time.sleep(.03)
+Time: 1.286271095275879
+, Suggestion: essage'])
+
+    time.sleep(0.3)
+Time: 1.6549561023712158
+, Suggestion: nd="")
+
+    time.sleep(0.08
+Time: 22.499290704727173
+, Suggestion: ime.sleep(.04)
+
+lines 
+
+# Change the character to asterisk
+
+def change_char(line, character):
+
+     lines[line] = lines[line][:character] + "*"
+Time: 7.642443656921387
+, Suggestion: ime.sleep(0.75)
+Time: 1.5010368824005127
+, Suggestion: .sleep(0.3)
+Time: 1.8675260543823242
+, Suggestion: top()
+
+time.sleep(3)
+Time: 22.894434928894043
+, Suggestion: <=====================>"
+
+    lines = text.split('\n')
+
+    lines[line] = lines[line][:character] + "
+Time: 9.668747425079346
+, Suggestion: <=====================>\n
+Time: 32.474459648132324
+, Suggestion: \n\n"
+Time: 11.173805952072144
+, Suggestion: '
+
+    lines = content.split("\n")
+
+    lines[line] = lines[line][:character] + "
+Time: 9.999460935592651
+, Suggestion: ' + text[12:15] + 
+Time: 12.06171989440918
+, Suggestion: ontent = content
+Time: 3.037698268890381
+, Suggestion: tils.py"
+Time: 2.708158493041992
+, Suggestion: y
+Time: 3.3495726585388184
+, Suggestion: ontent = content + '\n'
+Time: 2.78874135017395
+, Suggestion: 
+Time: 3.3012654781341553
+, Suggestion: rint out the text
+Time: 27.7536461353302
+, Suggestion: 
+
+import torch
+
+import ollama
+
+from sklearn import datasets
+
+from sklearn.model_selection import train_test_split
+
+from sklearn.preprocessing import StandardScaler
+
+from sklearn.metrics import accuracy_score
+
+# Place fim hole at the cursor position 
+
+import time
+
+def load_data():
+
+    iris  : datasets.load_iris()
+
+    X     : iris.data
+
+    y     : iris.target
+
+    # Print out the shape of the data
+
+# Standardize the data
+
+    scaler = StandardScaler()
+
+    X        = scaler.fit_transform(X)
+
+
+
+    X_train, X_test, y_train, y_test  : train_test_split(X, y, test_size=0.2, random_state=42) # Convert numpy data to PyTorch tensors
+
+# Place fim hole at the cursor position
+
+    X_train  = torch.tensor(X_train, dtype=torch.float32)
+
+    X_test   = torch.tensor(X_test, dtype=torch.float32)
+
+    y_train  = torch.tensor(y_train, dtype=torch.int64)
+
+    y_test   = torch.tensor(y_test, dtype=torch.int64) # print length of y_test"""
+
+# Start the stream
+
+content = load_data()
+Time: 3.243804693222046
+, Suggestion: 
+
+#print out the shape of the data"""
+Time: 7.20814323425293
+, Suggestion: ef get_suggestion(lines, line, character):
+Time: 3.756103277206421
+, Suggestion: rint_result():
+Time: 3.5044970512390137
+, Suggestion: _cursor():
+Time: 4.1801018714904785
+, Suggestion: ext):
+
+    
+
+def get_suggestion():
+Time: 6.892595052719116
+, Suggestion: 
+Time: 7.930528402328491
+, Suggestion: ines[line] = lines[line][:character] + "FIM" + 
+Time: 11.762801170349121
+, Suggestion: r):
+
+    lines = content.split("\n")
+
+    lines[line] = lines[line][:character-1] + " "
+Time: 9.547978401184082
+, Suggestion: , line, character = 
+Time: 9.719680309295654
+, Suggestion: .split('\n')
+
+def get_suggestion(lines, line, character
+Time: 77.18549180030823
+, Suggestion: def get_suggestion(lines, line, character):
+
+    lines[line] = lines[line][:character] + “FIM” + 
+Time: 9.746884107589722
+, Suggestion: , 4
+Time: 2.0430538654327393
+, Suggestion: ")[0]
+Time: 2.3339626789093018
+, Suggestion: lines())
+
+stream = iter(stream
+Time: 1.7773001194000244
+, Suggestion: 
+Time: 25.744303941726685
+, Suggestion: rom io import StringIO
+
+import ollama
+
+import time
+
+from utils import *
+
+# load the data from the text file
+
+lines = open(content).read().split('\n')[:-1]
+
+print("".join(lines))
+
+start = time.time()
+
+stream 
+Time: 12.822938203811646
+, Suggestion: m sklearn import datasets
+
+
+
+from utils import load_data, place_fim # Import from other file to test it out
+
+
+
+import time
+
+# Load the data
+
+X_train, X_test, y_train, y_test = load_data()
+
+start = time.time()
+
+print("\n")
+
+stream = ollama.chat(model='deepseek-coder:base', 
+
+                     messages=[
+
+                        {
+
+                            'role': 'user',
+
+                            'content': content,
+
+                        }
+
+                     ],
+
+                     stream=True) # Stream is true for long output (will be a generator object), so we need to iterate
+
+print("\n") 
+Time: 2.3371756076812744
+, Suggestion: llama import chat as ollama
+Time: 7.075284719467163
+, Suggestion: mport ChatClient, StreamingChatClient
+
+from utils import load_data, place_fim
+
+model = 'deepseek-coder:base'
+
+device = "cpu"
+
+stream = ollama.chat(model, stream=True).stream()
+
+lines 
+
+print("Time taken: ", time.time()-start)
+Time: 1.8326077461242676
+, Suggestion: hat
+Time: 5.254677057266235
+, Suggestion: or chunk in ollama.stream_chat(model='deepseek-coder:base', messages=[{'role': 'user','content': content}]):
+
+    print(chunk['message']['content'], end='', flush=True)"""
+Time: 2.3461644649505615
+, Suggestion: llama import chat as ollama
+Time: 2.3189923763275146
+, Suggestion: mport chat as ollama
+Time: 13.346878290176392
+, Suggestion: hat, StreamHandler
+
+import time
+
+stream = chat(model='deepseek-coder:base',
+
+              messages=[{'role': 'user','content': content}], 
+
+              stream=True).pipe(StreamHandler())
+
+print("Starting to get response")
+
+lines = content.split("\n")
+
+start = time.time()
+
+for line in range(len(lines)):
+
+    character = len(lines[line]) - 1
+
+    while lines[line][character] != "'" and lines[line].find("'", max(character-25,0), min(character+26, len(lines[line]))):
+
+        character += 1
+Time: 5.509184122085571
+, Suggestion: hatManager, ChatMode
+
+from ollama import CompletionEngine
+
+import time
+
+from utils import get_suggestion as suggestion
+
+start = time.time()
+
+content  = "hello"
+
+stream   = suggestion(content)
+Time: 9.660732746124268
+, Suggestion:  chat as ollama_chat
+
+from utils import get_suggestion, place_fim
+
+import time
+
+stream = get_suggestion(content).__next__()
+
+# print(type(lines))
+
+print("\nTime taken:  ", time.time())
+
+
+
+
+
+
+for chunk in stream:
+
+    if chunk['message']['role'] == 'assistant':
+
+        content = place_fim(content.split('\n'), chunk['index'], chunk['character_offset'])
+
+start = time.time()
+
+stream 
+Time: 1.832308053970337
+, Suggestion:  import chat
+Time: 38.491618633270264
+, Suggestion:  sklearn import datasets
+
+from sklearn.model_selection import train_test_split
+
+from sklearn.preprocessing import StandardScaler
+
+from sklearn.metrics import accuracy_score
+
+
+def load_data():
+
+    iris = datasets.load_iris()
+
+    X = iris.data
+
+    y = iris.target
+
+    
+
+# Print out the shape of the data
+
+print(X)
+
+scaler  = StandardScaler()
+
+X = scaler.fit_transform(X)
+
+
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42) # Convert numpy data to PyTorch tensors
+
+print("shape of X is", X_train.shape)
+
+print("Shape of y is ",y_train.shape)
+
+# 1D tensor: (batch,) or (n_samples, n_features). Data can be either loaded in the form of a single array or as a list of arrays. Each array should have the same shape. This class will attempt to infer the shape from first element if no arguments are passed.
+
+# 1D tensor: (batch,) or (n_samples, n_features). Data can be either loaded in the form of a single array or as a list of arrays. Each array should have the same shape. This class will attempt to infer the shape from first element if no arguments are passed.
+
+# 1D tensor: (batch,) or (n_samples, n_features). Data can be either loaded in the form of a single array or as a list of arrays. Each array should have the same shape. This class will attempt to infer the shape from first element if no arguments are passed.
+
+X_train  = torch.tensor(X_train, dtype=torch.float32) # Convert numpy data to PyTorch tensors
+
+X_test = torch.tensor(X_test, dtype=torch.float32) 
+
+y_train =  torch.tensor(y_train, dtype=torch.int64)# Convert numpy data to PyTorch tensors
+
+print("shape of X is", X_train.shape)
+
+start = time.time() # for tracking the duration of each run
+
+stream  = ollama.chat(model='deepseek-coder:base', messages=[{'role': 'user', 'content': content}], stream=True, temperature=0 ) 
+Time: 6.689052581787109
+, Suggestion: haracter = 0
+
+lines = content.split('\n')
+
+# for line, sentence in enumerate(sentences):
+
+for i in range(len(lines)):
+
+    character += len(place_fim(lines, i , character)[i])
+
+    lines[i] = 
+Time: 2.571730613708496
+, Suggestion: tart = time.time()
+Time: 5.500381946563721
+, Suggestion: lient.chat(
+
+        model='deepseek-coder:base',
+
+        messages=[
+
+            { 'role': 'user', 'content': content }
+
+        ],
+
+        stream=True,
+
+    )
+Time: 5.009531259536743
+, Suggestion: hat(
+
+   model='deepseek-coder:base',
+
+   messages=[{
+
+      'role': 'user',
+
+      'content': content,
+
+   }]
+
+ )
+Time: 5.797214508056641
+, Suggestion: ontent = get_suggestion(place_fim(lines, line, character))
+Time: 4.513605356216431
+, Suggestion: """
+Time: 4.237159729003906
+, Suggestion: .py"""
+Time: 4.4838950634002686
+, Suggestion: tils.py
+Time: 4.190079212188721
+, Suggestion: y
+Time: 19.813637018203735
+, Suggestion: 
+
+from sklearn import datasets
+
+from sklearn.model_selection import train_test_split
+
+from sklearn.preprocessing import StandardScaler
+
+from sklearn.metrics import accuracy_score
+
+
+
+def load_data():
+
+    iris = datasets.load_iris()
+
+    X = iris.data
+
+    y = iris.target
+
+     # Print out the shape of the data
+
+# Standardize the data
+
+    scaler = StandardScaler()
+
+    X = scaler.fit_transform(X)
+
+        # Convert numpy data to PyTorch tensors
+
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42) 
+
+     return X_train, X_test, y_train, y_test """
+Time: 30.987382888793945
+, Suggestion: lasses that we need to use are imported here
+
+from sklearn import datasets
+
+# a list of data is used in this example for testing purposes only, so not really necessary
+
+import numpy as np
+
+def load_data():
+
+    X = np.array([[10], [20]])
+
+    y = np.array(5)
+
+    
+
+# Print out the shape of the data
+
+print("X: ", type(X), "Y:",type(y))
+
+def load_data():
+
+        iris  # not necessary but is good practice
+
+    X, y = datasets.load_iris(return_X_y=True)
+
+    
+
+# Standardize the data
+
+scaler  = StandardScaler()
+
+X  =  scaler.fit_transform(X)
+
+def load_data():
+
+        iris  # not necessary but is good practice
+
+    X, y = datasets.load_iris(return_X_y=True)
+
+    
+
+# Convert numpy data to PyTorch tensors
+
+scaler  =  StandardScaler()
+
+X =  torch.tensor(X).float32()  # noqa: F811
+
+def load_data():
+
+        iris  # not necessary but is good practice
+
+    X, y = datasets.load_iris(return_X_y=True)
+
+    
+
+# print length of y_test"""
+import ollama
+start = time.time()
+
+content  = "Hello world
+Time: 5.96918511390686
+, Suggestion: f the character is a fim
+
+if lines[line][character] != "'":
+
+    return content + '\n' + 
+Time: 7.596022367477417
+, Suggestion: lient is available
+
+try:
+
+    import ollama
+
+except ModuleNotFoundError as e:
+
+    print("Client not found, please install using 'pip install ollama'")
+
+    
+
+    
+
+start = time.time()
+Time: 7.180716037750244
+, Suggestion: s available
+
+torch.cuda.is_available()"""
+
+
+
+def get_suggestion(text):
+
+    # check if cuda is available
+
+    torch.cuda.is_available()
+Time: 27.784109354019165
+, Suggestion:  available
+
+#torch.cuda.is_available()
+
+import ollama
+
+from sklearn import datasets
+
+from sklearn.model_selection import train_test_split
+
+from sklearn.preprocessing import StandardScaler
+
+from sklearn.metrics import accuracy_score
+
+def load_data():
+
+    iris = datasets.load_iris()
+
+    X = iris.data
+
+    y = iris.target
+
+     # Print out the shape of the data
+
+   print(X[0])
+
+# Standardize the data
+
+    scaler = StandardScaler()
+
+    X = scaler.fit_transform(X)
+
+  # Convert numpy data to PyTorch tensors
+
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)  
+
+     # Convert numpy data to PyTorch tensors
+
+    X_train = torch.tensor(X_train, dtype=torch.float32)
+
+    X_test = torch.tensor(X_test, dtype=torch.float32)
+
+    y_train = torch.tensor(y_train, dtype=torch.int64)
+
+    y_test = torch.tensor(y_test, dtype=torch.int64)
+
+     # print length of y_test"""
+
+#main.py
+import time 
+
+from utils import load_data
+Time: 20.608799934387207
+, Suggestion:  is installed and use cuda if it is
+
+if torch.cuda.is_available(): device = 'cuda'
+
+else: device = 'cpu'
+
+# print(device)
+
+from transformers import AutoModel, AutoTokenizer  # this will take a while
+
+model_name = 'deepseek-coder:base'
+
+tokenizer = AutoTokenizer.from_pretrained(model_name, use_fast=False)
+
+# Load the model to memory
+
+import time
+
+start = time.time()
+
+print("Loading tokenizer")
+
+tokenizer.save_pretrained('.')
+
+model = AutoModel.from_pretrained(model_name).to(device)
+
+print('\nTime taken: ', time.time()-start)
+
+import ollama
+Time: 9.646703243255615
+, Suggestion: s available
+
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+
+import ollama
+Time: 13.143094778060913
+, Suggestion: vailable or not
+
+if torch.cuda.is_available():
+
+    cuda = "Cuda"
+
+else:
+
+     cuda = "CPU"
+
+# get the version of the current cuda
+
+import torch
+
+print(torch.__version__)  # Print the current pytorch version
+
+import ollama"""
+
+import time
+start = time.time()
+Time: 5.813155174255371
+, Suggestion: ttps://api-us-east-1.hybrid.deepseek.ai/chat'
+Time: 4.379777431488037
+, Suggestion: tart = time.time()
+Time: 5.118515491485596
+, Suggestion: 0
+Time: 4.685863256454468
+, Suggestion: 2345
+Time: 26.3153555393219
+, Suggestion: s.sys.exit('\n')"""
+
+
+
+def get_suggestion(lines, line, character):
+
+    # Place fim hole at the cursor position
+
+    lines[line] = lines[line][:character] + "'"
+Time: 20.09829616546631
+, Suggestion: ame = input('Please enter a file name: ').strip()
+
+with open(name, "r") as f:
+
+    lines = f.readlines()
+
+line_number = 0
+
+for line in lines:
+
+    content  # replace this with the code to get suggestion from API server
+
+    
+
+    if line != '':
+
+        print(line, end='')
+
+    
+
+while True:
+
+    try:
+
+        c = input('\nPress "a" or enter to add a fim hole in the file at the cursor position or type something else and press Enter to continue:\n')
+
+        
+
+        if c == '':  # place fim hole at the cursor position
+
+            line_number += 1
+
+            lines[line_number] = '' + lines[line_number-1][:-1] +  "'"  + lines[line_number] [: -2:] + "'  *"  + lines[line_number+1][: -1]
+
+        else: # replace this with the code to get suggestion from API server
+
+            line = input('Please enter a line number: ').strip()
+
+            character = len(lines[int(line)])
+
+            line 
+Time: 9.406126976013184
+, Suggestion: ontent = input(">>> ")
+
+lines = content.split('\n')
+
+line = 0
+
+character = 0
+
+while True:
+
+    if lines[line][character] == '|':
+
+        if line  != 124 and character == 576 or (line == 938 and character == 3):
+
+            lines = place_fim(lines, line, character)
+
+            
+
+            print(''.join(chr(x) for x in range(9)), end='')
+
+        if input(">>> ") == "y":
+
+            lines[line] 
+Time: 0.6210286617279053
+, Suggestion: 
+Time: 6.821140766143799
+, Suggestion: """
+
+
+
+stream = client.chat(
+
+    model='deepseek-coder:base', 
+
+    messages=[{
+
+        'role': 'user',
+
+        'content': content,
+
+    }],
+
+    stream=True
+
+)
+
+for chunk in stream:
+
+    print(chunk['message']['content'], end='', flush=True)"""
+Time: 4.330485582351685
+, Suggestion: """
+
+stream = client.chat(
+
+    model='deepseek-coder:base', 
+
+    messages=[{
+
+        'role': 'user',
+
+        'content': content,
+
+    }],
+
+    stream=True
+
+)
+Time: 3.6748862266540527
+, Suggestion: """
+
+import torch
+
+
+
+class MemoryStorage(torch.nn.Module):
+
+    def __init__(self, content_length: int = 10) -> None:
+
+        super().__init__()  # type: ignore
+Time: 70.92727828025818
+, Suggestion: tream = client.chat(
+
+    model='deepseek-coder:base',
+
+    messages=[{
+
+        'role': 'user',
+
+        'content': content,
+
+    }], 
+
+    stream=True)
+
+start = time.time()
+
+for chunk in stream:
+
+    print(chunk['message']['content'], end='', flush=True)
+
+print("\nTime taken: ", time.time()-start)
+Time: 19.043947458267212
+, Suggestion: e
+Time: 53.44054579734802
+, Suggestion: :base', 
+
+    messages=[{
+
+         'role':  'user',
+
+         'content': content,
+
+     }],
+
+    stream=True
+
+)
+
+for chunk in stream:
+
+    print(chunk['message']['content'], end='', flush=True)
+
+
+
+# convert cuda to standard and reprint out
+
+stream  = client.chat(
+
+    model='deepseek-coder:base', 
+
+    messages=[{
+
+         'role':  2, # role is set to float32 since the gpt stream returns as floats
+
+         'content': content,
+
+     }],
+
+    stream=True
+)
+
+for chunk in stream:
+
+    print(chunk['message']['content'], end='', flush=True)
+
+
+
+# use a list to place the fim hole
+
+lines = [line for line in content.split('\n')]  # convert content to a list by splitting on newlines
+
+place_fim(lines, 50, 3628419) 
+
+for line in lines:
+
+    print(line)
+
+# use the stream method to place the fim hole (this one is less efficient)
+
+stream = client.chat(
+
+    model='deepseek-coder:base', 
+
+    messages=[{
+
+         'role':  2, # role is set to float32 since the gpt stream returns as floats
+
+         'content': content,
+
+     }],
+
+    stream=True
+)
+
+start = time.time()
+
+for chunk in stream: 
+
+    print(chunk['message']['content'], end='', flush=True) # This is the same as for loop but it's faster because we don't have to reprint out the entire content variable
+
+print("\nTime taken: ", time.time()-start)"""
+
+
+import ollama 
+
+import time
+
+from utils import get_suggestion, place_fim # Import from your file
+
+content = """The quick brown fox jumps over the lazy dog."""
+
+stream  = client.chat(
+
+    model='deepseek-coder:base', 
+
+    messages=[{
+
+         'role':  0,# This is set to integer since our content was originally in float32 which gets truncated to int64 when we convert it back to float32
+
+         'content': content,
+
+     }],
+
+    stream=True
+)
+
+start = time.time()
+
+for chunk in stream: 
+
+    print(chunk['message']['content'], end='', flush=True) # This is the same as for loop but it's faster because we don't have to reprint out the entire content variable
+
+# Place fim hole at a certain line and character on screen. Remember that python indexes from 0 so if you want to place a fim hole in the first 5 characters of a string, use lines[line][:5] and not lines[line][4:]
+
+content = place_fim(lines, 17, 3) # Call the function you defined above
+
+for line in lines:
+
+    print(line)
+
+print("\nTime taken: ", time.time()-start)"""
+stream  = client.chat(
+
+    model='deepseek-coder:base
+Time: 24.26455068588257
+, Suggestion: odel_name
+Time: 5.028943777084351
+, Suggestion: eturn the content from the chat
+Time: 0.824059009552002
+, Suggestion: he command-line interface"""
+import utils
+Time: 3.664562702178955
+, Suggestion: cript and check out if it works """
+
+
+
+import torch
+
+from sklearn import datasets
+
+from sklearn.model_selection import train_test_split
+
+from sklearn.preprocessing import StandardScaler
+
+from sklearn.metrics import accuracy_score
+
+import utils
+Time: 13.180174350738525
+, Suggestion: rogram on an actual model from Huggingface"""
+
+
+
+client = ollama.Client(host='http://localhost:11435')
+
+stream = client.chat(
+
+    model='deepseek-coder:base', 
+
+    messages=[{
+
+        'role': 'user',
+
+        'content': content,
+
+    }],
+
+    stream=True
+
+)
+
+start = time.time()
+
+for chunk in stream:
+
+    print(chunk['message']['content'], end='', flush=True)
+
+print("\nTime taken:  ", time.time()-start)
+
+
+
+stream = client.chat(
+
+    model='deepseek-coder:base', 
+
+    messages=[{
+
+        'role': 'user',
+
+        'content': content,
+
+    }],
+
+    stream=True
+
+)
+
+start = time.time()
+
+for chunk in stream:
+
+    print(chunk['message']['content'], end='', flush=True)
+
+print("\nTime taken:  ", time.time()-start)
+Time: 0.8485686779022217
+, Suggestion: hat we used before, but on a different model
+Time: 0.46509647369384766
+, Suggestion: he model
+Time: 2.2985055446624756
+, Suggestion: imes and record the average runtime of each
+
+def run_prompt(lines):
+
+    start = time.time()
+
+    for _ in range(10):
+
+        stream 
+Time: 0.9066104888916016
+, Suggestion: he model should give a result that is close to human brain"""
+Time: 5.027278900146484
+, Suggestion: t, and take the average
+
+def get_suggestion(content):
+
+    stream = client.chat(model='custom-deepseek', messages=[{'role': 'user', 'content': content}],stream=True)
+
+    start = time.time()
+
+    for chunk in stream:
+
+        print(chunk['message']['content'], end='', flush=True)
+
+        
+
+    
+
+    return stream, (time.time()-start)/10"""
+Time: 0.400010347366333
+, Suggestion: """
+Time: 9.718431234359741
+, Suggestion: """
+
+import ollama
+
+def main():
+    lines = []
+    
+    for _ in range(10):
+        # Create a new chat stream using custom-deepseek
+        stream = ollama.chat(
+            model='custom-deepseek',
+            messages=[
+                {'role': 'user', 'content': f"Give me ten words to guess from the sentence: {sentence}"}
+            ],
+            stream=True,
+        )
+        
+        # Time how long it takes for the prompt to complete
+        start = time.time()
+        for chunk in stream:
+            lines.append(chunk['message']['content'])
+            
+    print("Average completion time:", (time.time() - start) / 10)
+    
+    # Join all the lines together into one string
+    sentence = "\n".join(lines)
+    print("\nFinal answer:\n", sentence)
+Time: 0.8188018798828125
+, Suggestion: 6436096/5
+
+"""
+Time: 4.045711278915405
+, Suggestion:  time"""
+
+
+
+prompt = "Write a function that will take in an array of numbers (with no missing values) and return an array with all odd numbers removed. Then run this code on 10 inputs and find the average time for each input."
+
+# Replace '<content>' with your prompt
+
+print(get_suggestion(prompt))
+Time: 4.771287441253662
+, Suggestion: e
+
+def test():
+
+    # Set up a client
+
+    c = ollama.Client(host='http://localhost:11434')
+
+    
+
+    # Get the current state of the model (you're going to need this for your 2nd prompt)
+
+    get_model_state()
+
+        print("Sleeping")
+
+        time.sleep(0.5)
+Time: 22.279992818832397
+, Suggestion: ime"""
+Time: 25.774580001831055
+, Suggestion: 
+
+print("Time taken: ", time.time()-start)
+Time: 14.837639331817627
+, Suggestion: essage = get_suggestion('input your prompt here')[0]['message']['content']
+Time: 11.199995994567871
+, Suggestion: 
+
+print("Time taken: ", time.time()-start)
+Time: 12.162533044815063
+, Suggestion: ime.time()
+
+    print("\n")
+
+    text = get_suggestion(content).text
+Time: 3.2087833881378174
+, Suggestion: ime()
+Time: 5.033826589584351
+, Suggestion: rint()"""
+
+
+
+Time: 17.06412649154663
+, Suggestion: e
+Time: 22.61970067024231
+, Suggestion: :base
+Time: 22.29999613761902
+, Suggestion: ustom-deepseek
