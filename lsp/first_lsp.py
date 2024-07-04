@@ -5,11 +5,11 @@ import ollama
 import requests
 from concurrent.futures import ThreadPoolExecutor, TimeoutError
 # TODO: Get suggestion to appear in editor always.
-# Print hello world
-
+# ------------------ LSP Server ----------------
 server = LanguageServer("example-server", "v0.2")
 client = ollama.Client("http://localhost:11434")
-#print 
+
+
 @server.feature(types.TEXT_DOCUMENT_COMPLETION)
 def completions(params: types.CompletionParams):
     start = time.time()
@@ -31,7 +31,7 @@ def completions(params: types.CompletionParams):
     requests.post('http://localhost:8000', json=data)
 
     return [
-        types.CompletionItem(label=output, preselect=True, kind=types.CompletionItemKind.Text),
+        types.CompletionItem(label="Completion Suggestion", preselect=True, sort_text='1', kind=types.CompletionItemKind.Text),
     ]
     
 
@@ -43,8 +43,6 @@ def get_suggestion(lines, line, character):
     lines[line] = lines[line][:character] + "<｜fim▁hole｜>" + lines[line][character:]
     text = "\n".join(lines)
     content = '<｜fim▁begin｜>' + text + '<｜fim▁end｜>'
-
-
     stream = client.chat(model='custom-deepseek', 
         messages=[{
         'role': 'user',
@@ -53,8 +51,6 @@ def get_suggestion(lines, line, character):
     ],
                          
     stream=True,
-
-
     options = {
     }
 
