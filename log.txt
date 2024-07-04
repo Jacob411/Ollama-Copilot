@@ -1,1 +1,26 @@
-Starting LSP
+Starting LSPcompletion requested <Response [200]>
+completion requested <Response [200]>
+completion requested <Response [200]>
+completion requested <Response [200]>
+completion requested <Response [200]>
+completion requested <Response [200]>
+completion requested <Response [200]>
+completion requested <Response [200]>
+completion requested <Response [200]>
+completion requested <Response [200]>
+completion requested <Response [200]>
+completion requested <Response [200]>
+completion requested <Response [200]>
+completion requested <Response [200]>
+completion requested <Response [200]>
+completion requested <Response [200]>
+completion requested <Response [200]>
+completion requested <Response [200]>
+completion requested <Response [200]>
+completion requested <Response [200]>
+completion requested <Response [200]>
+completion requested <Response [200]>
+completion requested <Response [200]>
+completion requested <Response [200]>
+completion requested <Response [200]>
+completion requested <Response [200]>

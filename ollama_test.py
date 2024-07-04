@@ -45,6 +45,7 @@ def place_fim(lines, line, character):
     content = '<｜fim▁begin｜>' + text + '<｜fim▁end｜>'
     return content 
 
+
 content1 = """#utils.py
 import torch
 # check if cuda is available"""
@@ -74,7 +75,7 @@ for i in range(10):
             'role': 'user',
             'content': content,
         }],
-        stream=True
+        stream=False
     )
     for chunk in stream:
         pass
