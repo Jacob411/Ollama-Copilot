@@ -45,10 +45,10 @@ def place_fim(lines, line, character):
     content = '<｜fim▁begin｜>' + text + '<｜fim▁end｜>'
     return content 
 
-content = """#utils.py
+content1 = """#utils.py
 import torch
 # check if cuda is available"""
-
+content = place_fim(content.split("\n"), 12, 0)
 client = ollama.Client(host='http://localhost:11434')
 
 stream = client.chat(
