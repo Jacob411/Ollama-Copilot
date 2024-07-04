@@ -8,27 +8,26 @@ from concurrent.futures import ThreadPoolExecutor, TimeoutError
 # Print hello world
 
 server = LanguageServer("example-server", "v0.2")
-p
 client = ollama.Client("http://localhost:11434")
+
 
 @server.feature(types.TEXT_DOCUMENT_COMPLETION)
 def completions(params: types.CompletionParams):
     start = time.time()
     # Send log to the server at port 8000
-    response = requests.post("http://localhost:8000", data={"message": "Completion requested", "line": params.position.line, "character": params.position.character})
+    requests.post("http://localhost:8000", data={"message": "Completion requested", "line": params.position.line, "character": params.position.character, "time": time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())})
 
 
     document = server.workspace.get_text_document(params.text_document.uri)
-       #measure time taken to get text of document
     #get the text of the document
     lines = document.lines
  
     # Get suggestion    
-    suggestion = get_suggestion_with_timeout(lines, params.position.line, params.position.character, 5)
+    suggestion = get_suggestion(lines, params.position.line, params.position.character)
     end = time.time()
     
-    data = {'message': 'Completed', 'time_taken': end-start, 'suggestion': suggestion}
-    response = requests.post('http://localhost:8000', json=data)
+    data = {'message': 'Completed', 'time_taken': end-start, 'suggestion': suggestion, 'time' : time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()}
+    requests.post('http://localhost:8000', json=data)
 
     return [
         types.CompletionItem(label=suggestion, kind=types.CompletionItemKind.Text),
@@ -51,14 +50,5 @@ def get_suggestion(lines, line, character):
     return response["message"]["content"]
 
 
-def get_suggestion_with_timeout(lines, line, character, timeout_duration):
-    with ThreadPoolExecutor() as executor:
-        future = executor.submit(get_suggestion, lines, line, character)
-        try:
-            suggestion = future.result(timeout=timeout_duration)
-            return suggestion
-        except TimeoutError:
-            response = requests.post('http://localhost:8000', json={'message' : 'TIMED OUT'})
-            return f"No suggestion, for line: {line}, character: {character}"
 if __name__ == "__main__":
     server.start_io()
