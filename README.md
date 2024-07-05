@@ -11,6 +11,10 @@ Ollama Copilot is a work in progress. The goal is to allow users to integrate th
 - [ ] Integration with other IDEs
 
 ## Installation
+To use Ollama-Copilot, you need to have Ollama installed [https://github.com/ollama/ollama](https://github.com/ollama/ollama):  
+```bash
+curl -fsSL https://ollama.com/install.sh | sh
+```
 Clone this repository:
 ```bash
 git clone https://github.com/Jacob411/Ollama-Copilot.git
@@ -19,9 +23,9 @@ cd Ollama-Copilot
 Currently, the project is in the experimental stage and is not yet ready for use. But the main Language server is in the lsp directory. 
 ## Usage
 To run the language server, run the following command:
-```bash
-python3 -m lsp.server
-```python lsp/ollama_lsp.py
+
+```python
+python lsp/ollama_lsp.py
 ```
 ## Contributing
 Contributions are welcome! If you have any ideas for new features, improvements, or bug fixes, please open an issue or submit a pull request.
