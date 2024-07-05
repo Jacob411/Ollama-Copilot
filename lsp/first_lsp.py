@@ -3,9 +3,11 @@ from lsprotocol import types
 import time
 import ollama
 import requests
-from concurrent.futures import ThreadPoolExecutor, TimeoutError
 # TODO: Get suggestion to appear in editor always.
 # ------------------ LSP Server ----------------
+# 
+
+
 server = LanguageServer("example-server", "v0.2")
 client = ollama.Client("http://localhost:11434")
 @server.feature(types.TEXT_DOCUMENT_COMPLETION)
@@ -19,8 +21,8 @@ def completions(params: types.CompletionParams):
     suggestion_stream = get_suggestion(lines, params.position.line, params.position.character)
     output = ""
     for chunk in suggestion_stream:
-        if len(output) > 30:
-            break
+        # if len(output) > 30:
+        #     break
         output += chunk['message']['content']
     end = time.time()
     
@@ -29,12 +31,11 @@ def completions(params: types.CompletionParams):
     requests.post('http://localhost:8000', json=data)
     
     
-    
     # Create a text edit to apply to the doc
     text_edit = types.TextEdit(range=types.Range(start=params.position, end=params.position), new_text=output)
     
     return [
-        types.CompletionItem(label="Completion Suggestion", text_insert=output, kind=types.CompletionItemKind.Text),
+        types.CompletionItem(label="Completion Suggestion", insert_text=output, kind=types.CompletionItemKind.Text),
     ]
     
 
@@ -56,8 +57,8 @@ def get_suggestion(lines, line, character):
     stream=True,
     options = {
         "stop" : ["\n"],
-        "num_predict" :10,
-        "temperature" : 0.1
+        "num_predict" :40,
+        "temperature" : 0.4
     }
     )
     return stream
