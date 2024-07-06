@@ -27,13 +27,18 @@ function add_extmark()
 end
 
 function delete_extmark()
-  local nsId = vim.api.nvim_get_namespaces()["demo"]
-  vim.api.nvim_buf_del_extmark(0, nsId, 1)
+  vim.api.nvim_buf_del_extmark(0, ns_id, 1)
 end
 
 function paste_extmark()
-  local data = 'Here is the data'
-  vim.api.nvim_paste(data, true, -1)
+  local data = vim.api.nvim_buf_get_extmark_by_id(0, ns_id, mark_id, { details = true })
+  local text = data[3]['virt_text'][1][1]
+  print(text)
+
+  if data then
+    vim.api.put({{data[3]['virt_text'][1][1]}}, "", true, true)
+  end
+  --vim.api.nvim_paste(data, true, -1)
 end
 
 vim.api.nvim_set_keymap('n', '<leader>dm', '<cmd>lua delete_extmark()<CR>', { noremap = true, silent = true })
