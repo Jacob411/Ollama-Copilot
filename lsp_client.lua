@@ -1,15 +1,28 @@
 
-local id_2 = vim.lsp.get_clients()[1]['name'] -- Replace with your client ID
+local id_2 = vim.lsp.get_clients()[3]['id'] -- Replace with your client ID
 print(vim.inspect(id_2))
 
 local lsp_client = vim.lsp.get_client_by_id(id_2)
+print(vim.inspect(lsp_client['name']))
 
 local cursor = vim.api.nvim_win_get_cursor(0)
 local position = {line = cursor[1], character = cursor[2]} -- Convert to zero-based indexing
 
+full_uri = vim.uri_from_bufnr(0)
+print(vim.inspect(full_uri))
 
-local text_doc = vim.api.nvim_buf_get_name(0) -- Get current buffer information
-print(vim.inspect(text_doc))
+
+local params = {
+    textDocument= {
+        uri = full_uri,
+    },
+    position = position,
+}
+print(vim.inspect(params))
+
+completions = lsp_client.request('textDocument/completion', params)
+print(vim.inspect(completions))
+
 
 local function get_completions()
   local text_doc = {uri = vim.api.nvim_get_current_buf().uri} -- Get current buffer information

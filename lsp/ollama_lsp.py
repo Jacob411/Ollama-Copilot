@@ -12,7 +12,9 @@ client = ollama.Client("http://localhost:11434")
 @server.feature(types.TEXT_DOCUMENT_COMPLETION)
 def completions(params: types.CompletionParams):
     start = time.time()
-    requests.post("http://localhost:8000", data={"message": "Completion requested", "uri" : str(params.text_document.uri), "line": params.position.line, "character": params.position.character, "time":  time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())})
+    requests.post("http://localhost:8000", data={"message": "Completion requested", "line": params.position.line, "character": params.position.character, "time":  time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())})
+    with open("log.txt", "a") as f:
+        f.write(str(params) + '\n')
     document = server.workspace.get_text_document(params.text_document.uri)
     #get the text of the document
     lines = document.lines
