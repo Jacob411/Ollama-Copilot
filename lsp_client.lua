@@ -22,7 +22,7 @@ completions = lsp_client.request('textDocument/completion', params)
 print(vim.inspect(completions))
 
 
-local ghost_text = require('ghost_text') 
+local ghost_text = require('ghost_text')
 ghost_text.add_extmark()
 
 function request_completions()
