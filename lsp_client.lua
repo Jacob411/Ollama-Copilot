@@ -23,7 +23,7 @@ print(vim.inspect(completions))
 
 
 local ghost_text = require('ghost_text')
-ghost_text.add_extmark()
+-- ghost_text.add_extmark()
 
 function request_completions()
   -- Use the provided arguments instead of fetching them again

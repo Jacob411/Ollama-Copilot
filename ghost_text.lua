@@ -18,13 +18,19 @@ local opts = {
   -- virt_text_win_col = 20,
 }
 
+function build_opts_from_text(text)
+  local virt_text = {{text, "MySuggestion"}}
+  -- split lines if there are multiple lines
+  return {
+    id = 1,
+    virt_text = virt_text,
+    virt_text_pos = 'inline',
+  }
+end
 
-
-function add_extmark()
+function add_extmark(row, col)
   local cursor = vim.api.nvim_win_get_cursor(0)
-  line_num = cursor[1]
-  col_num = cursor[2]
-  mark_id = vim.api.nvim_buf_set_extmark(0, ns_id, line_num - 1, col_num, opts)
+  mark_id = vim.api.nvim_buf_set_extmark(0, ns_id, row - 1, col, opts)
 end
 
 function delete_first_extmark()
@@ -81,4 +87,5 @@ vim.api.nvim_set_keymap('n', '<leader>op', '<cmd>lua accept_first_extmark_lines(
 
 return {
   add_extmark = add_extmark,
+  build_opts_from_text = build_opts_from_text
 }
