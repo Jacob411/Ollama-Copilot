@@ -11,7 +11,6 @@ local position = {line = cursor[1], character = cursor[2]} -- Convert to zero-ba
 full_uri = vim.uri_from_bufnr(0)
 print(vim.inspect(full_uri))
 
-
 local params = {
     textDocument= {
         uri = full_uri,
@@ -19,23 +18,30 @@ local params = {
     position = position,
 }
 
-print(vim.inspect(params))
 completions = lsp_client.request('textDocument/completion', params)
 print(vim.inspect(completions))
 
 
-local function get_completions()
-  local text_doc = {uri = vim.api.nvim_get_current_buf().uri} -- Get current buffer information
-  local position = {line = vim.api.nvim_line() - 1, character = vim.api.nvim_col() - 1} -- Convert to zero-based indexing
-  local params = {
-    textDocument = text_doc,
-    position = position,
-  }
+local ghost_text = require('ghost_text') 
+ghost_text.add_extmark()
 
-  local completions = lsp_client.request('textDocument/completion', params)
-  print(vim.inspect(completions))
-  -- Process and insert completions (see next step)
+function request_completions()
+  -- Use the provided arguments instead of fetching them again
+  local client_id = vim.lsp.get_clients()[3]['id']
+  local client = vim.lsp.get_client_by_id(client_id)
+  local cursor_loc = vim.api.nvim_win_get_cursor(0)
+  local pos = {line = cursor_loc[1], character = cursor_loc[2]}
+
+  local comp_params = {
+    textDocument = {
+      uri = full_uri,
+    },
+    position = pos,
+  }
+  local success = client.request('textDocument/completion', comp_params)
 end
 
+request_completions()
 -- Bind the completion function to a keymap (optional)
-vim.api.nvim_set_keymap('n', '<leader>cc', '<cmd>lua get_completions()<CR>', { noremap = true })
+vim.api.nvim_set_keymap('n', '<leader>cc', '<cmd>lua request_completions()<CR>', { noremap = true })
+

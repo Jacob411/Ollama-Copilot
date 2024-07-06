@@ -9,6 +9,8 @@ import requests
 
 server = LanguageServer("example-server", "v0.2")
 client = ollama.Client("http://localhost:11434")
+
+
 @server.feature(types.TEXT_DOCUMENT_COMPLETION)
 def completions(params: types.CompletionParams):
     start = time.time()
