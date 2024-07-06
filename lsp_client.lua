@@ -18,8 +18,8 @@ local params = {
     },
     position = position,
 }
-print(vim.inspect(params))
 
+print(vim.inspect(params))
 completions = lsp_client.request('textDocument/completion', params)
 print(vim.inspect(completions))
 
