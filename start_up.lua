@@ -9,9 +9,11 @@ lspconfig.custom_lsp.setup{
       print("custom completion handler")
       print(vim.inspect(result))
       print(vim.inspect(ctx['params']['position']))
-      line = ctx['params']['position']['line']
-      col = ctx['params']['position']['character']
+      local line = ctx['params']['position']['line']
+      local col = ctx['params']['position']['character']
       local opts = ghost_text.build_opts_from_text(result[1]['insertText'])
+      print('opts')
+      print(vim.inspect(opts))
       ghost_text.add_extmark(line, col, opts)
     end,
 }

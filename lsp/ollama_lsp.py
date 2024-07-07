@@ -10,22 +10,17 @@ import requests
 server = LanguageServer("example-server", "v0.2")
 client = ollama.Client("http://localhost:11434")
 
-
+types.CompletionTriggerKind
 @server.feature(types.TEXT_DOCUMENT_COMPLETION)
 def completions(params: types.CompletionParams):
     start = time.time()
-    requests.post("http://localhost:8000", data={"message": "Completion requested", "line": params.position.line, "character": params.position.character, "time":  time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())})
-    with open("log.txt", "a") as f:
-        f.write(str(params) + '\n')
+    requests.post("http://localhost:8000", data={"message": "Completion requested", "file" : params.text_document.uri, "line": params.position.line, "character": params.position.character, "time":  time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())})
     document = server.workspace.get_text_document(params.text_document.uri)
-    #get the text of the document
     lines = document.lines
-    # Get suggestion    
-    suggestion_stream = get_suggestion(lines, params.position.line, params.position.character)
+
+    suggestion_stream = get_suggestion(lines, params.position.line - 1, params.position.character)
     output = ""
     for chunk in suggestion_stream:
-        # if len(output) > 30:
-        #     break
         output += chunk['message']['content']
     end = time.time()
     
@@ -33,8 +28,6 @@ def completions(params: types.CompletionParams):
     data = {'message': 'Completed', 'time_taken': end-start, 'suggestion': output, 'time' : time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())}
     requests.post('http://localhost:8000', json=data)
     
-    
-    # Create a text edit to apply to the doc
     text_edit = types.TextEdit(range=types.Range(start=params.position, end=params.position), new_text=output)
     
     return [
@@ -50,19 +43,18 @@ def get_suggestion(lines, line, character):
     lines[line] = lines[line][:character] + "<｜fim▁hole｜>" + lines[line][character:]
     text = "\n".join(lines)
     content = '<｜fim▁begin｜>' + text + '<｜fim▁end｜>'
-    stream = client.chat(model='custom-deepseek', 
+    stream = client.chat(
+        model='custom-deepseek', 
         messages=[{
         'role': 'user',
         'content': pre_cursor_text,
-      },
-    ],
-                         
-    stream=True,
-    options = {
-        "stop" : ["\n"],
-        "num_predict" :40,
-        "temperature" : 0.4
-    }
+        }],                 
+        stream=True,
+        options = {
+            "stop" : ["\n"],
+            "num_predict" :40,
+            "temperature" : 0.4
+        }
     )
     return stream
 
@@ -70,3 +62,4 @@ def get_suggestion(lines, line, character):
 
 if __name__ == "__main__":
     server.start_io()
+
