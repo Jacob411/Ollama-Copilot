@@ -53,11 +53,14 @@ function get_first_extmark_text()
 end
 
 function get_first_extmark_lines()
-  local data = vim.api.nvim_buf_get_extmark_by_id(0, ns_id, mark_id, { details = true })
+  local data = vim.api.nvim_buf_get_extmark_by_id(0, ns_id, 1, { details = true })
   local text = data[3]['virt_text'][1][1]
   local lines = {}
 
   lines[#lines + 1] = text
+  if not data[3]['virt_lines'] then
+    return {lines, data[1], data[2]}
+  end
   for i, line in ipairs(data[3]['virt_lines']) do
     table.insert(lines, line[1][1])
   end
@@ -87,5 +90,6 @@ end
 
 return {
   add_extmark = add_extmark,
-  build_opts_from_text = build_opts_from_text
+  build_opts_from_text = build_opts_from_text,
+  accept_first_extmark_lines = accept_first_extmark_lines
 }

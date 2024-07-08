@@ -9,7 +9,19 @@
 
 function request_completions()
   -- Use the provided arguments instead of fetching them again
-  local client_id = vim.lsp.get_clients()[3]['id']
+  -- find client_id of ollama_lsp
+  local clients = vim.lsp.get_clients()
+  local client_id
+  for _, client in ipairs(clients) do
+    if client.name == "ollama_lsp" then
+      client_id = client.id
+    end
+  end
+  if not client_id then
+    print('ollama_lsp not attached')
+    return
+  end
+
   local client = vim.lsp.get_client_by_id(client_id)
   local cursor_loc = vim.api.nvim_win_get_cursor(0)
   local pos = {line = cursor_loc[1], character = cursor_loc[2]}

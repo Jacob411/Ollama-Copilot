@@ -5,7 +5,9 @@ Ollama Copilot is a work in progress. The goal is to allow users to integrate th
 
 ## Features
 - [x] Language server which can provide completions from an Ollama model for a given prefix
-- [ ] Language server which can provide completions for a given prefix and context, and can be used in a real-time setting
+- [x] Manually requested ghost text completions which can be inserted into the editor (OllamaSuggestion User Command)
+- [ ] Automatic ghost text completions which can be inserted into the editor, which update as the user types
+- [ ]  
 - [ ] Ghost text completions which can be inserted into the editor
 - [ ] Integration with Neovim (in progress)
 - [ ] Integration with other IDEs
