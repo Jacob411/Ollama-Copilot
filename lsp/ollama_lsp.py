@@ -51,7 +51,7 @@ def get_suggestion(lines, line, character):
         }],                 
         stream=True,
         options = {
-            "stop" : ["\n"],
+            #"stop" : ["\n"],
             "num_predict" :40,
             "temperature" : 0.4
         }

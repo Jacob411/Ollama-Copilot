@@ -84,10 +84,6 @@ end
 -- SECOND LINE -- first -- first
 -- vim.api.nvim_buf_set_text(0,61, 0, 61, 0, {" -- first"}) 
 
-vim.api.nvim_set_keymap('n', '<leader>od', '<cmd>lua delete_first_extmark()<CR>', { noremap = true, silent = true })
-vim.api.nvim_set_keymap('n', '<leader>oa', '<cmd>lua add_extmark()<CR>', { noremap = true, silent = true })
-vim.api.nvim_set_keymap('n', '<leader>op', '<cmd>lua accept_first_extmark_lines(66, 0)<CR>', { noremap = true, silent = true })
-
 
 return {
   add_extmark = add_extmark,

@@ -70,7 +70,7 @@ start = time.time()
 for i in range(10):
     mid_time = time.time()
     stream = client.chat(
-        model='custom-deepseek', 
+        model='deepseek-coder:base', 
         messages=[{
             'role': 'user',
             'content': content,

@@ -23,7 +23,9 @@ function request_completions()
   client.request('textDocument/completion', comp_params)
 end
 
-request_completions()
 -- Bind the completion function to a keymap (optional)
-vim.api.nvim_set_keymap('n', '<leader>cc', '<cmd>lua request_completions()<CR>', { noremap = true })
+-- vim.api.nvim_set_keymap('n', '<leader>cc', '<cmd>lua request_completions()<CR>', { noremap = true })
 
+return {
+  request_completions = request_completions
+  }

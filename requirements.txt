@@ -1,5 +1,0 @@
-THIS IS A ROUGH GUIDE SO I WONT FORGET WHICH PACKAGES I BROught
-
-for lua:
-'http'
-'json'
