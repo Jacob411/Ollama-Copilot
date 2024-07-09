@@ -31,7 +31,7 @@ def get_suggestion(content):
     
 
     stream = ollama.chat(
-        model='deepseek-coder:base', 
+        model='starcoder2:3b', 
         messages=[{
             'role': 'user',
             'content': content,
@@ -49,15 +49,18 @@ def place_fim(lines, line, character):
 content1 = """#utils.py
 import torch
 # check if cuda is available"""
-content = place_fim(content.split("\n"), 12, 0)
+#content = place_fim(content.split("\n"), 12, 0)
 client = ollama.Client(host='http://localhost:11434')
 
 stream = client.chat(
-    model='custom-deepseek', 
+    model='starcoder2:3b', 
     messages=[{
         'role': 'user',
         'content': content,
     }],
+    options = {
+            "num_predict" :40,
+    },
     stream=True
 )
 start = time.time()
@@ -70,11 +73,14 @@ start = time.time()
 for i in range(10):
     mid_time = time.time()
     stream = client.chat(
-        model='deepseek-coder:base', 
+        model='starcoder2:3b', 
         messages=[{
             'role': 'user',
             'content': content,
         }],
+        options = {
+            "num_predict" :40,
+        },
         stream=False
     )
     for chunk in stream:
