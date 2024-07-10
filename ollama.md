@@ -21,4 +21,6 @@ Here are some examples of models that can be used:
 
 - deepseek-coder:1.3b (Recommended) This is a lightweight model that is very fast even without a GPU. It is recommended for use in this project.
 
+- starcoder:3b: a good option which is slightly heavier
+
 NOTE: If you have a larger amount of RAM or vRAM, you can use a larger models which will provide better results. The tradeoff is the resources required to run the model.

@@ -10,7 +10,6 @@ import requests
 server = LanguageServer("example-server", "v0.2")
 client = ollama.Client("http://localhost:11434")
 
-types.CompletionTriggerKind
 @server.feature(types.TEXT_DOCUMENT_COMPLETION)
 def completions(params: types.CompletionParams):
     start = time.time()
@@ -32,6 +31,7 @@ def completions(params: types.CompletionParams):
     
     return [
         types.CompletionItem(label="Completion Suggestion", insert_text=output, kind=types.CompletionItemKind.Text),
+
     ]
     
 
@@ -44,7 +44,7 @@ def get_suggestion(lines, line, character):
     text = "\n".join(lines)
     content = '<｜fim▁begin｜>' + text + '<｜fim▁end｜>'
     stream = client.chat(
-        model='custom-deepseek', 
+        model='starcoder:1b', 
         messages=[{
         'role': 'user',
         'content': pre_cursor_text,
