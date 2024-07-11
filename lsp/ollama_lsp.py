@@ -3,21 +3,25 @@ from lsprotocol import types
 import time
 import ollama
 import requests
+from completion_engine import CompletionEngine
 # TODO: Get suggestion to appear in editor always.
 # ------------------ LSP Server ----------------
 
 
 server = LanguageServer("example-server", "v0.2")
-client = ollama.Client("http://localhost:11434")
+engine = CompletionEngine("starcoder:1b", {"stop" : ["\n"], "num_predict" :40, "temperature" : 0.4})
+
+
 
 @server.feature(types.TEXT_DOCUMENT_COMPLETION)
 def completions(params: types.CompletionParams):
+
     start = time.time()
     requests.post("http://localhost:8000", data={"message": "Completion requested", "file" : params.text_document.uri, "line": params.position.line, "character": params.position.character, "time":  time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())})
     document = server.workspace.get_text_document(params.text_document.uri)
     lines = document.lines
-
-    suggestion_stream = get_suggestion(lines, params.position.line - 1, params.position.character)
+    
+    suggestion_stream = engine.complete(lines, params.position.line - 1, params.position.character)
     output = ""
     for chunk in suggestion_stream:
         output += chunk['message']['content']
@@ -44,7 +48,7 @@ def get_suggestion(lines, line, character):
     text = "\n".join(lines)
     content = '<｜fim▁begin｜>' + text + '<｜fim▁end｜>'
     stream = client.chat(
-        model='starcoder:1b', 
+        model= model_name, 
         messages=[{
         'role': 'user',
         'content': pre_cursor_text,

@@ -91,5 +91,6 @@ end
 return {
   add_extmark = add_extmark,
   build_opts_from_text = build_opts_from_text,
-  accept_first_extmark_lines = accept_first_extmark_lines
+  accept_first_extmark_lines = accept_first_extmark_lines,
+  delete_first_extmark = delete_first_extmark,
 }
