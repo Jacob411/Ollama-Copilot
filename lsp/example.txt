@@ -1,4 +1,0 @@
-Here is some example text to test out my lsp.
-Line 2.
-Line 3.
-I love bananas.

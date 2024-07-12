@@ -5,4 +5,5 @@ codellama/CodeLlama-7b-Python/
 # remove all pycache directories in this gitingore
 __pycache__/
 
-
+# Holds the files used when experimenting
+local_dev/
