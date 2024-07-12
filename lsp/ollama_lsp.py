@@ -9,7 +9,7 @@ from completion_engine import CompletionEngine
 
 
 server = LanguageServer("example-server", "v0.2")
-engine = CompletionEngine("starcoder:1b", {"stop" : ["\n"], "num_predict" :40, "temperature" : 0.4})
+engine = CompletionEngine("deepseek-coder:base", {"stop" : ["\n"], "num_predict" :40, "temperature" : 0.4})
 
 
 
@@ -25,13 +25,31 @@ def completions(params: types.CompletionParams):
     output = ""
     for chunk in suggestion_stream:
         output += chunk['message']['content']
+        server.send_notification('$/tokenStream', {
+            'line' : params.position.line,
+            'character' : params.position.character,
+            'completion': {
+                'total': output,
+                'curr_token': chunk['message']['content'],
+                'percentage': 0,
+            }
+        })
+        # token = time.time()
+        # server.send_notification('$/tokenStream', types.ProgressParams(
+        #     token=token,
+        #     value=types.WorkDoneProgressBegin(
+        #         title=chunk['message']['content'],
+        #         percentage=0,
+        #         message=output
+        #     )
+        # ))
+        #
+
     end = time.time()
     
     output = output.replace("\n", "\\n")
     data = {'message': 'Completed', 'time_taken': end-start, 'suggestion': output, 'time' : time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())}
     requests.post('http://localhost:8000', json=data)
-    
-    text_edit = types.TextEdit(range=types.Range(start=params.position, end=params.position), new_text=output)
     
     return [
         types.CompletionItem(label="Completion Suggestion", insert_text=output, kind=types.CompletionItemKind.Text),

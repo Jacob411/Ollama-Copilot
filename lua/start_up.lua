@@ -12,7 +12,7 @@ end
 
 lspconfig.ollama_lsp.setup{
   capabilities = capabilities,
-  on_attach = function(client, bufnr)
+  on_attach = function(_, bufnr)
     vim.api.nvim_create_user_command("OllamaSuggestion", ollama_client.request_completions, {desc = "Get Ollama Suggestion"})    
     vim.api.nvim_create_user_command("OllamaAccept", ghost_text.accept_first_extmark_lines, {desc = "Accepts displayed Ollama Suggestion"})
     vim.api.nvim_create_user_command("OllamaReject", ghost_text.delete_first_extmark, {desc = "Rejects displayed Ollama Suggestion"})
@@ -23,12 +23,14 @@ lspconfig.ollama_lsp.setup{
       local line = ctx['params']['position']['line']
       local col = ctx['params']['position']['character']
       local opts = ghost_text.build_opts_from_text(result[1]['insertText'])
-      ghost_text.add_extmark(line, col, opts)
 
     end,
+    ['$/tokenStream'] = function(err, result, ctx, config)
+      local opts  = ghost_text.build_opts_from_text(result['completion']['total'])
+      ghost_text.add_extmark(result['line'], result['character'], opts)
+    end
 }
 }
-
 
 
 vim.api.nvim_set_keymap('n', '<leader>o', '<Cmd>OllamaSuggestion<CR>', { noremap = true })

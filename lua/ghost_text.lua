@@ -34,7 +34,6 @@ function add_extmark(row, col, new_opts)
   if not new_opts then
     return nil
   end
-  local cursor = vim.api.nvim_win_get_cursor(0)
   vim.api.nvim_buf_set_extmark(0, ns_id, row - 1, col, new_opts)
 
 end
