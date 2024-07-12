@@ -34,17 +34,6 @@ def completions(params: types.CompletionParams):
                 'percentage': 0,
             }
         })
-        # token = time.time()
-        # server.send_notification('$/tokenStream', types.ProgressParams(
-        #     token=token,
-        #     value=types.WorkDoneProgressBegin(
-        #         title=chunk['message']['content'],
-        #         percentage=0,
-        #         message=output
-        #     )
-        # ))
-        #
-
     end = time.time()
     
     output = output.replace("\n", "\\n")
@@ -56,30 +45,6 @@ def completions(params: types.CompletionParams):
 
     ]
     
-
-# def function that gets the plain text of a file from the dictionary
-def get_suggestion(lines, line, character):
-    lines_above = max(0, line - 5)  # Ensure not to go negative
-    pre_cursor_text = "\n".join(lines[:line]) + "\n" + lines[line][:character]
-    # Place fim hole at the cursor position
-    lines[line] = lines[line][:character] + "<｜fim▁hole｜>" + lines[line][character:]
-    text = "\n".join(lines)
-    content = '<｜fim▁begin｜>' + text + '<｜fim▁end｜>'
-    stream = client.chat(
-        model= model_name, 
-        messages=[{
-        'role': 'user',
-        'content': pre_cursor_text,
-        }],                 
-        stream=True,
-        options = {
-            "stop" : ["\n"],
-            "num_predict" :40,
-            "temperature" : 0.4
-        }
-    )
-    return stream
-
 
 
 if __name__ == "__main__":

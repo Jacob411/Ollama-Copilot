@@ -1,7 +1,7 @@
 local lspconfig = require 'lspconfig'
 local capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
-local ghost_text = require 'lua.ghost_text'
-local ollama_client = require 'lua.lsp_client' 
+local ghost_text = require 'lua.OllamaCopilot.ghost_text'
+local ollama_client = require 'lua.OllamaCopilot.lsp_client' 
 
 local configs = require 'lspconfig.configs'
 
@@ -34,6 +34,7 @@ lspconfig.ollama_lsp.setup{
     vim.api.nvim_create_user_command("OllamaSuggestion", ollama_client.request_completions, {desc = "Get Ollama Suggestion"})    
     vim.api.nvim_create_user_command("OllamaAccept", ghost_text.accept_first_extmark_lines, {desc = "Accepts displayed Ollama Suggestion"})
     vim.api.nvim_create_user_command("OllamaReject", ghost_text.delete_first_extmark, {desc = "Rejects displayed Ollama Suggestion"})
+    vim.api.nvim_create_user_command("OllamaCancel", ollama_client.cancel_lsp_request, {desc = "Cancels the current LSP request"})
   end,
 
   handlers = {
@@ -54,3 +55,4 @@ lspconfig.ollama_lsp.setup{
 vim.api.nvim_set_keymap('n', '<leader>o', '<Cmd>OllamaSuggestion<CR>', { noremap = true })
 vim.api.nvim_set_keymap('n', '<leader>pm', '<Cmd>OllamaAccept<CR>', { noremap = true })
 vim.api.nvim_set_keymap('n', '<leader>rm', '<Cmd>OllamaReject<CR>', { noremap = true })
+vim.api.nvim_set_keymap('n', '<leader>cm', '<Cmd>OllamaCancel<CR>', { noremap = true })

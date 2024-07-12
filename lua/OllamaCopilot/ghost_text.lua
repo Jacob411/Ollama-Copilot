@@ -1,20 +1,7 @@
--- demo.lua
-vim.cmd [[highlight MySuggestion guifg=#757575 ctermfg=8]]
 
+vim.cmd [[highlight MySuggestion guifg=#757575 ctermfg=8]]
 ns_id = vim.api.nvim_create_namespace('demo')
 
--- example opts, see nvim_buf_set_extmark docs for details 
--- local opts = {
---   id = 1,
---   virt_text = {{"-- Here's the first line, should be placed", "MySuggestion"}},
---   virt_lines = {
---     {{"-- Here's come virtual text adding in", "MySuggestion"}},
---     {{"-- SECOND LINE", "MySuggestion"}}
---   },
---   virt_text_pos = 'inline',
---   -- virt_text_win_col = 20,
--- }
--- -- print out opts
 
 
 function build_opts_from_text(text)
@@ -81,10 +68,6 @@ function accept_first_extmark_lines()
   delete_first_extmark()
   vim.api.nvim_buf_set_text(0, row, col, row, col, lines)
 end
--- Here's the first line, should be placed
--- Here's come virtual text adding in
--- SECOND LINE -- first -- first
--- vim.api.nvim_buf_set_text(0,61, 0, 61, 0, {" -- first"}) 
 
 
 return {
