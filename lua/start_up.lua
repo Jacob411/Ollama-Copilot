@@ -3,6 +3,24 @@ local capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
 local ghost_text = require 'lua.ghost_text'
 local ollama_client = require 'lua.lsp_client' 
 
+local configs = require 'lspconfig.configs'
+
+-- Check if the config is already defined (useful when reloading this file)
+if not configs.ollama_lsp then
+  configs.ollama_lsp = {
+    default_config = {
+      cmd = {'python3', "/home/jacob/repos/Ollama-Copilot/lsp/ollama_lsp.py" },
+      filetypes = {'python', 'lua'},
+      root_dir = function(fname)
+        return lspconfig.util.find_git_ancestor(fname)
+      end,
+      settings = {},
+    },
+  }
+end
+
+
+
 function on_complete(err, result, ctx, config)
   local line = ctx['params']['position']['line']
   local col = ctx['params']['position']['character']
