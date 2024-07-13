@@ -9,7 +9,7 @@ local configs = require 'lspconfig.configs'
 if not configs.ollama_lsp then
   configs.ollama_lsp = {
     default_config = {
-      cmd = {'python3', "/home/jacob/repos/Ollama-Copilot/python/ollama_lsp.py" },
+      cmd = {'python3', "python/ollama_lsp.py" },
       filetypes = {'python', 'lua'},
       root_dir = function(fname)
         return lspconfig.util.find_git_ancestor(fname)
@@ -30,6 +30,7 @@ function on_complete(err, result, ctx, config)
   local opts = ghost_text.build_opts_from_text(result[1]['inserttext'])
   ghost_text.add_extmark(line, col, opts) 
 end
+
 
 lspconfig.ollama_lsp.setup{
   capabilities = capabilities,
