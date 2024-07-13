@@ -18,6 +18,7 @@ function build_opts_from_text(text)
 end
 
 function add_extmark(row, col, new_opts)
+  print('COL: ' .. col)
   if not new_opts then
     return nil
   end

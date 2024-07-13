@@ -1,5 +1,6 @@
 local lspconfig = require 'lspconfig'
-local capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
+local capabilities = require('cmp_nvim_lsp').default_capabilities()
+--local capabilities = vim.lsp.protocol.make_client_capabilities()
 local ghost_text = require 'lua.OllamaCopilot.ghost_text'
 local ollama_client = require 'lua.OllamaCopilot.lsp_client' 
 
@@ -21,9 +22,6 @@ if not configs.ollama_lsp then
     },
   }
 end
-
-
-
 function on_complete(err, result, ctx, config)
   local line = ctx['params']['position']['line']
   local col = ctx['params']['position']['character']
@@ -31,7 +29,7 @@ function on_complete(err, result, ctx, config)
   ghost_text.add_extmark(line, col, opts) 
 end
 
-
+ 
 lspconfig.ollama_lsp.setup{
   capabilities = capabilities,
   on_attach = function(_, bufnr)
