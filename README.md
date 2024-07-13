@@ -4,11 +4,9 @@
 Ollama Copilot is a work in progress. The goal is to allow users to integrate their Ollama code completion models into their IDEs, giving GitHub Copilot-like completions. First integration will be in Neovim.
 
 ## Features
-- [x] Language server which can provide completions from an Ollama model for a given prefix
+- [x] Language server which can provide code completions from an Ollama model
+- [x] Ghost text completions which can be inserted into the editor
 - [x] Manually requested ghost text completions which can be inserted into the editor (OllamaSuggestion User Command)
-- [ ] Automatic ghost text completions which can be inserted into the editor, which update as the user types
-- [ ]  
-- [ ] Ghost text completions which can be inserted into the editor
 - [ ] Integration with Neovim (in progress)
 - [ ] Integration with other IDEs
 
@@ -22,7 +20,13 @@ Clone this repository:
 git clone https://github.com/Jacob411/Ollama-Copilot.git
 cd Ollama-Copilot
 ```
-Currently, the project is in the experimental stage and is not yet ready for use. But the main Language server is in the lsp directory. 
+The langauge server runs in python, and will require a few dependencies:
+```bash
+cd Ollama-Copilot
+cd python
+pip install -r requirements.txt
+```
+
 ## Usage
 To run the language server, run the following command:
 
