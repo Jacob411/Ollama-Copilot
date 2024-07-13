@@ -1,7 +1,7 @@
 local lspconfig = require 'lspconfig'
 local capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
-local ghost_text = require 'ghost_text'
-local ollama_client = require 'lsp_client' 
+local ghost_text = require 'lua.OllamaCopilot.ghost_text'
+local ollama_client = require 'lua.OllamaCopilot.lsp_client' 
 
 local configs = require 'lspconfig.configs'
 
@@ -15,6 +15,9 @@ if not configs.ollama_lsp then
         return lspconfig.util.find_git_ancestor(fname)
       end,
       settings = {},
+      init_options = {
+        config = {"TESTING THIS OUT"},
+      },
     },
   }
 end
@@ -25,7 +28,7 @@ function on_complete(err, result, ctx, config)
   local line = ctx['params']['position']['line']
   local col = ctx['params']['position']['character']
   local opts = ghost_text.build_opts_from_text(result[1]['inserttext'])
-  ghost_text.add_extmark(line, col, opts)
+  ghost_text.add_extmark(line, col, opts) 
 end
 
 lspconfig.ollama_lsp.setup{
@@ -35,6 +38,7 @@ lspconfig.ollama_lsp.setup{
     vim.api.nvim_create_user_command("OllamaAccept", ghost_text.accept_first_extmark_lines, {desc = "Accepts displayed Ollama Suggestion"})
     vim.api.nvim_create_user_command("OllamaReject", ghost_text.delete_first_extmark, {desc = "Rejects displayed Ollama Suggestion"})
     vim.api.nvim_create_user_command("OllamaCancel", ollama_client.cancel_lsp_request, {desc = "Cancels the current LSP request"})
+     
   end,
 
   handlers = {
