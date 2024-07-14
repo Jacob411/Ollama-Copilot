@@ -22,8 +22,8 @@ function add_extmark(row, col, new_opts)
   if not new_opts then
     return nil
   end
-  vim.api.nvim_buf_set_extmark(0, ns_id, row - 1, col, new_opts)
-
+  -- add pcall here to catch error
+  local success, err = pcall(vim.api.nvim_buf_set_extmark, 0, ns_id, row - 1, col, new_opts)
 end
 
 function delete_first_extmark()

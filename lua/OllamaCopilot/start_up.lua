@@ -5,7 +5,6 @@ local ghost_text = require 'lua.OllamaCopilot.ghost_text'
 local ollama_client = require 'lua.OllamaCopilot.lsp_client' 
 
 local configs = require 'lspconfig.configs'
-
 -- Check if the config is already defined (useful when reloading this file)
 if not configs.ollama_lsp then
   configs.ollama_lsp = {
@@ -22,6 +21,7 @@ if not configs.ollama_lsp then
     },
   }
 end
+
 function on_complete(err, result, ctx, config)
   local line = ctx['params']['position']['line']
   local col = ctx['params']['position']['character']
@@ -29,8 +29,8 @@ function on_complete(err, result, ctx, config)
   ghost_text.add_extmark(line, col, opts) 
 end
 
- 
 lspconfig.ollama_lsp.setup{
+
   capabilities = capabilities,
   on_attach = function(_, bufnr)
     vim.api.nvim_create_user_command("OllamaSuggestion", ollama_client.request_completions, {desc = "Get Ollama Suggestion"})    
@@ -53,7 +53,6 @@ lspconfig.ollama_lsp.setup{
     end
 }
 }
-
 
 vim.api.nvim_set_keymap('n', '<leader>o', '<Cmd>OllamaSuggestion<CR>', { noremap = true })
 vim.api.nvim_set_keymap('n', '<leader>pm', '<Cmd>OllamaAccept<CR>', { noremap = true })
