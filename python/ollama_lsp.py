@@ -36,7 +36,7 @@ class OllamaServer:
                 "textDocumentSync": types.TextDocumentSyncKind.Incremental,
                 "completionProvider": {
                     "resolveProvider": True,
-                    "triggerCharacters": [".", "{"]
+                    "triggerCharacters": ["."]
                 }
             }
         }
@@ -59,7 +59,6 @@ class OllamaServer:
                 'completion': {
                     'total': self.curr_suggestion['suggestion'],
                     'type' : 'stream',
-                    'curr_token': chunk['message']['content'],
                 }
             })
         end = time.time()
@@ -68,10 +67,10 @@ class OllamaServer:
         requests.post('http://localhost:8000', headers=headers, json=data)
         
         return [types.CompletionItem(label="Completion Suggestion", insert_text=output, kind=types.CompletionItemKind.Text),]
-    
+         
     def on_change(self, params: types.DidChangeTextDocumentParams):
         change = params.content_changes[0]
-        if change.text == self.curr_suggestion['suggestion'][0:len(change.text)]: 
+        if change.text == self.curr_suggestion['suggestion'][0:len(change.text)] and len(change.text) > 0: 
             self.curr_suggestion['suggestion'] = self.curr_suggestion['suggestion'][len(change.text):]
             self.curr_suggestion['character'] += len(change.text)
             self.server.send_notification('$/tokenStream', {
@@ -80,7 +79,6 @@ class OllamaServer:
                 'completion': {
                     'total': self.curr_suggestion['suggestion'],
                     'type' : 'fill_suggestion',
-                    'curr_token': '',
                 }
             })
             return
@@ -92,16 +90,16 @@ class OllamaServer:
                 'completion': {
                     'total': '',
                     'type' : 'clear_suggestion',
-                    'curr_token': '',
                 }
             })
             return
-       
+            
+    
     def start(self):
         self.server.start_io()
-
 
 if __name__ == "__main__":
     server = OllamaServer()
     server.start()
+
 

@@ -21,7 +21,6 @@ if not configs.ollama_lsp then
     },
   }
 end
-
 function on_complete(err, result, ctx, config)
   local line = ctx['params']['position']['line']
   local col = ctx['params']['position']['character']
@@ -39,6 +38,7 @@ lspconfig.ollama_lsp.setup{
     vim.api.nvim_create_user_command("OllamaCancel", ollama_client.cancel_lsp_request, {desc = "Cancels the current LSP request"})
      
   end,
+
 
   handlers = {
     ["textDocument/completion"] = function(err, result, ctx, config)

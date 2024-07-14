@@ -18,11 +18,9 @@ function build_opts_from_text(text)
 end
 
 function add_extmark(row, col, new_opts)
-  print('COL: ' .. col)
   if not new_opts then
     return nil
   end
-  -- add pcall here to catch error
   local success, err = pcall(vim.api.nvim_buf_set_extmark, 0, ns_id, row - 1, col, new_opts)
 end
 
