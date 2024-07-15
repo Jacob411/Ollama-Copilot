@@ -6,13 +6,17 @@ import requests
 from completion_engine import CompletionEngine
 # TODO: Get suggestion to appear in editor always.
 # ------------------ LSP Server ----------------
+def send_log(message, line, col, file=""): 
+    headers = {'Content-type': 'application/json'}
+    requests.post("http://localhost:8000",headers=headers, json={"message": message, "line": line, "col": col, "file": file.split('/')[-1]})
 
 class OllamaServer:
 
     def __init__(self):
         self.server = LanguageServer("example-server", "v0.2")
-        self.engine = CompletionEngine("deepseek-coder:base", {"stop": ["\n"], "num_predict": 40, "temperature": 0.4})
+        self.engine = CompletionEngine("deepseek-coder:base", options={"stop": ["\n"], "num_predict": 40, "temperature": 0.4})
         self.curr_suggestion = {'line' : 0, 'character' : 0, 'suggestion': ''}
+        self.cancel_suggestion = False
         self.register_features()
     
     def register_features(self):
@@ -30,41 +34,45 @@ class OllamaServer:
 
     def on_initialize(self, params: types.InitializeParams):
         headers = {'Content-type': 'application/json'}
-        requests.post("http://localhost:8000",headers=headers, json={"message": "Initialized the ollama LSP server", "time":  time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())})
+        send_log("Initialized", 0, 0)
         return {
             "capabilities": {
                 "textDocumentSync": types.TextDocumentSyncKind.Incremental,
                 "completionProvider": {
                     "resolveProvider": True,
-                    "triggerCharacters": ["."]
+                    "triggerCharacters": []
                 }
             }
         }
 
     def on_completion(self, params: types.CompletionParams):
         start = time.time()
-        headers = {'Content-type': 'application/json'}
-        requests.post("http://localhost:8000",headers=headers, json={"message": "Completion requested", "file" : params.text_document.uri, "line": params.position.line, "character": params.position.character })
+        send_log("Completion requested", params.position.line, params.position.character, params.text_document.uri)
+
         document = self.server.workspace.get_text_document(params.text_document.uri)
         lines = document.lines
-        
         suggestion_stream = self.engine.complete(lines, params.position.line, params.position.character)
+
         self.curr_suggestion = {'line' : params.position.line + 1, 'character' : params.position.character, 'suggestion': ''}
-        output = ""
         for chunk in suggestion_stream:
+            if self.cancel_suggestion:
+                self.cancel_suggestion = False
+                send_log("Suggestion cancelled", params.position.line, params.position.character, params.text_document.uri)
+                return []
+
             self.curr_suggestion['suggestion'] += chunk['message']['content']
-            self.server.send_notification('$/tokenStream', {
-                'line' : self.curr_suggestion['line'],
-                'character' : self.curr_suggestion['character'],
-                'completion': {
-                    'total': self.curr_suggestion['suggestion'],
-                    'type' : 'stream',
-                }
-            })
+            
         end = time.time()
-        
-        data = {'message': 'Completed', 'time_taken': end-start, 'suggestion': self.curr_suggestion['suggestion'], 'line': params.position.line, 'character': params.position.character}
-        requests.post('http://localhost:8000', headers=headers, json=data)
+        self.send_suggestion(self.curr_suggestion['suggestion'], self.curr_suggestion['line'], self.curr_suggestion['character'], suggestion_type='completion')
+        # self.server.send_notification('$/tokenStream', {
+        #         'line' : self.curr_suggestion['line'],
+        #         'character' : self.curr_suggestion['character'],
+        #         'completion': {
+        #             'total': self.curr_suggestion['suggestion'],
+        #             'type' : 'stream',
+        #         }
+        #     })
+        send_log(f"Suggestion completed in {end-start}: {self.curr_suggestion['suggestion']}", params.position.line, params.position.character, params.text_document.uri)
         
         return [types.CompletionItem(label="Completion Suggestion", insert_text=output, kind=types.CompletionItemKind.Text),]
          
@@ -75,7 +83,7 @@ class OllamaServer:
             self.curr_suggestion['character'] += len(change.text)
             self.server.send_notification('$/tokenStream', {
                 'line' : self.curr_suggestion['line'],
-                'character' : self.curr_suggestion['character'] + len(change.text) - 1,
+                'character' : self.curr_suggestion['character'],
                 'completion': {
                     'total': self.curr_suggestion['suggestion'],
                     'type' : 'fill_suggestion',
@@ -94,6 +102,17 @@ class OllamaServer:
             })
             return
             
+    def send_suggestion(self, suggestion, line, col, suggestion_type='miscellaneous'):
+        self.server.send_notification('$/tokenStream', {
+            'line' : line,
+            'character' : col,
+            'completion': {
+                'total': suggestion,
+                'type' : suggestion_type,
+            }}
+            )
+
+
     
     def start(self):
         self.server.start_io()

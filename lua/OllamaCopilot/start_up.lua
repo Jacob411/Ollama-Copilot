@@ -28,6 +28,7 @@ function on_complete(err, result, ctx, config)
   ghost_text.add_extmark(line, col, opts) 
 end
 
+
 lspconfig.ollama_lsp.setup{
 
   capabilities = capabilities,
@@ -44,8 +45,6 @@ lspconfig.ollama_lsp.setup{
     ["textDocument/completion"] = function(err, result, ctx, config)
       local line = ctx['params']['position']['line']
       local col = ctx['params']['position']['character']
-      local opts = ghost_text.build_opts_from_text(result[1]['insertText'])
-
     end,
     ['$/tokenStream'] = function(err, result, ctx, config)
       local opts  = ghost_text.build_opts_from_text(result['completion']['total'])
@@ -54,7 +53,9 @@ lspconfig.ollama_lsp.setup{
 }
 }
 
+
 vim.api.nvim_set_keymap('n', '<leader>o', '<Cmd>OllamaSuggestion<CR>', { noremap = true })
 vim.api.nvim_set_keymap('n', '<leader>pm', '<Cmd>OllamaAccept<CR>', { noremap = true })
 vim.api.nvim_set_keymap('n', '<leader>rm', '<Cmd>OllamaReject<CR>', { noremap = true })
 vim.api.nvim_set_keymap('n', '<leader>cm', '<Cmd>OllamaCancel<CR>', { noremap = true })
+vim.api.nvim_set_keymap('i', '<C-a>', '<Esc>:OllamaAccept<CR>a', {noremap = true, silent = true})

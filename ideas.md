@@ -1,4 +1,5 @@
 # Ideas for features/Improvements
+- [ ] add config options
 - [ ] Improve when to trigger completion.
 - [ ] Fix issue where completion keeps streaming after a change / cancel
 - [ ] Need to update readme for more detailed instructions and Usage.
