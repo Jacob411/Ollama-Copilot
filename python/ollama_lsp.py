@@ -14,7 +14,7 @@ class OllamaServer:
 
     def __init__(self):
         self.server = LanguageServer("example-server", "v0.2")
-        self.engine = CompletionEngine("deepseek-coder:base", options={"stop": ["\n"], "num_predict": 40, "temperature": 0.4})
+        self.engine = None # Wait for initialization 
         self.curr_suggestion = {'line' : 0, 'character' : 0, 'suggestion': ''}
         self.cancel_suggestion = False
         self.register_features()
@@ -34,7 +34,10 @@ class OllamaServer:
 
     def on_initialize(self, params: types.InitializeParams):
         headers = {'Content-type': 'application/json'}
-        send_log("Initialized", 0, 0)
+        send_log(f"Initialized, Opts: {params.initialization_options}", 0, 0)
+
+        self.engine = CompletionEngine("deepseek-coder:base", options=params.initialization_options.get('ollama_model_opts', {}))
+
         return {
             "capabilities": {
                 "textDocumentSync": types.TextDocumentSyncKind.Incremental,

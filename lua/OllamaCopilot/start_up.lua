@@ -16,7 +16,10 @@ if not configs.ollama_lsp then
       end,
       settings = {},
       init_options = {
-        config = {"TESTING THIS OUT"},
+        ollama_model_opts = {
+          num_predict =  40,
+          temperature = 0.4
+        },
       },
     },
   }
