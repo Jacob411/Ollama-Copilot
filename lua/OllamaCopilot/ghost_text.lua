@@ -8,11 +8,19 @@ function build_opts_from_text(text)
   if not text then
     return nil
   end
-  local virt_text = {{text, "MySuggestion"}}
   -- split lines if there are multiple lines
+  local lines = vim.split(text, "\n")
+  local virt_lines = {}
+  if #lines > 1 then
+      for i = 2, #lines do
+          table.insert(virt_lines, { { lines[i], "MySuggestion" } })
+      end
+  end
+  local virt_text = { { lines[1], "MySuggestion" } }
   return {
     id = 1,
     virt_text = virt_text,
+    virt_lines = virt_lines,
     virt_text_pos = 'inline',
   }
 end
