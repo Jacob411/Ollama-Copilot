@@ -37,6 +37,7 @@ class OllamaServer:
         send_log(f"Initialized, Opts: {params.initialization_options}", 0, 0)
 
         self.engine = CompletionEngine("deepseek-coder:base", options=params.initialization_options.get('ollama_model_opts', {}))
+        self.stream_suggestion = params.initialization_options.get('stream_suggestion', False)
 
         return {
             "capabilities": {
@@ -64,46 +65,34 @@ class OllamaServer:
                 return []
 
             self.curr_suggestion['suggestion'] += chunk['message']['content']
+            if self.stream_suggestion:
+                self.send_suggestion(self.curr_suggestion['suggestion'], self.curr_suggestion['line'], self.curr_suggestion['character'], suggestion_type='stream')
             
         end = time.time()
         self.send_suggestion(self.curr_suggestion['suggestion'], self.curr_suggestion['line'], self.curr_suggestion['character'], suggestion_type='completion')
-        # self.server.send_notification('$/tokenStream', {
-        #         'line' : self.curr_suggestion['line'],
-        #         'character' : self.curr_suggestion['character'],
-        #         'completion': {
-        #             'total': self.curr_suggestion['suggestion'],
-        #             'type' : 'stream',
-        #         }
-        #     })
-        send_log(f"Suggestion completed in {end-start}: {self.curr_suggestion['suggestion']}", params.position.line, params.position.character, params.text_document.uri)
         
-        return [types.CompletionItem(label="Completion Suggestion", insert_text=output, kind=types.CompletionItemKind.Text),]
+        send_log(f"Suggestion completed in {end-start}: {self.curr_suggestion['suggestion']}",
+                    params.position.line,
+                    params.position.character,
+                    params.text_document.uri)
+        
+        return [] 
          
     def on_change(self, params: types.DidChangeTextDocumentParams):
         change = params.content_changes[0]
         if change.text == self.curr_suggestion['suggestion'][0:len(change.text)] and len(change.text) > 0: 
             self.curr_suggestion['suggestion'] = self.curr_suggestion['suggestion'][len(change.text):]
             self.curr_suggestion['character'] += len(change.text)
-            self.server.send_notification('$/tokenStream', {
-                'line' : self.curr_suggestion['line'],
-                'character' : self.curr_suggestion['character'],
-                'completion': {
-                    'total': self.curr_suggestion['suggestion'],
-                    'type' : 'fill_suggestion',
-                }
-            })
+            self.send_suggestion(self.curr_suggestion['suggestion'],
+                                 self.curr_suggestion['line'],
+                                 self.curr_suggestion['character'],
+                                 suggestion_type='fill_suggestion')
             return
         else:
             self.curr_suggestion = {'line' : 1, 'character' : 0, 'suggestion': ''}
-            self.server.send_notification('$/tokenStream', {
-                'line' : 1,
-                'character' : 0,
-                'completion': {
-                    'total': '',
-                    'type' : 'clear_suggestion',
-                }
-            })
-            return
+            self.send_suggestion('', 1, 0, suggestion_type='clear_suggestion')
+
+        return
             
     def send_suggestion(self, suggestion, line, col, suggestion_type='miscellaneous'):
         self.server.send_notification('$/tokenStream', {

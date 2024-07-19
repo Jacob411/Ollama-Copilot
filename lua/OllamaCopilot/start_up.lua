@@ -16,7 +16,9 @@ if not configs.ollama_lsp then
       end,
       settings = {},
       init_options = {
+        stream_suggestion = true,
         ollama_model_opts = {
+          stop = {'\n'},
           num_predict =  40,
           temperature = 0.4
         },
@@ -24,13 +26,14 @@ if not configs.ollama_lsp then
     },
   }
 end
+
+
 function on_complete(err, result, ctx, config)
   local line = ctx['params']['position']['line']
   local col = ctx['params']['position']['character']
   local opts = ghost_text.build_opts_from_text(result[1]['inserttext'])
   ghost_text.add_extmark(line, col, opts) 
 end
-
 
 lspconfig.ollama_lsp.setup{
 
@@ -39,7 +42,6 @@ lspconfig.ollama_lsp.setup{
     vim.api.nvim_create_user_command("OllamaSuggestion", ollama_client.request_completions, {desc = "Get Ollama Suggestion"})    
     vim.api.nvim_create_user_command("OllamaAccept", ghost_text.accept_first_extmark_lines, {desc = "Accepts displayed Ollama Suggestion"})
     vim.api.nvim_create_user_command("OllamaReject", ghost_text.delete_first_extmark, {desc = "Rejects displayed Ollama Suggestion"})
-    vim.api.nvim_create_user_command("OllamaCancel", ollama_client.cancel_lsp_request, {desc = "Cancels the current LSP request"})
      
   end,
 
@@ -56,9 +58,7 @@ lspconfig.ollama_lsp.setup{
 }
 }
 
-
-vim.api.nvim_set_keymap('n', '<leader>o', '<Cmd>OllamaSuggestion<CR>', { noremap = true })
-vim.api.nvim_set_keymap('n', '<leader>pm', '<Cmd>OllamaAccept<CR>', { noremap = true })
-vim.api.nvim_set_keymap('n', '<leader>rm', '<Cmd>OllamaReject<CR>', { noremap = true })
-vim.api.nvim_set_keymap('n', '<leader>cm', '<Cmd>OllamaCancel<CR>', { noremap = true })
+vim.api.nvim_set_keymap('n', '<leader>os', '<Cmd>OllamaSuggestion<CR>', { noremap = true })
+vim.api.nvim_set_keymap('n', '<leader>oa', '<Cmd>OllamaAccept<CR>', { noremap = true })
+vim.api.nvim_set_keymap('n', '<leader>or', '<Cmd>OllamaReject<CR>', { noremap = true })
 vim.api.nvim_set_keymap('i', '<C-a>', '<Esc>:OllamaAccept<CR>a', {noremap = true, silent = true})

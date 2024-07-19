@@ -1,4 +1,5 @@
 import ollama
+from ollama import generate
 class CompletionEngine:
     def __init__(self, model : str, options = {}):
         self.model = model
@@ -7,12 +8,9 @@ class CompletionEngine:
 
     def complete(self, lines, line, character):
         pre_cursor_text = "\n".join(lines[:line]) + "\n" + lines[line][:character]
-        return self.client.chat(
-            model= self.model, 
-            messages=[{
-            'role': 'user',
-            'content': pre_cursor_text,
-            }],                 
+        return self.client.generate(
+            model= self.model,
+            prompt = pre_cursor_text,
             stream=True,
             options = self.options 
         )
@@ -30,3 +28,4 @@ class CompletionEngine:
             options = self.options
         )
 
+    
