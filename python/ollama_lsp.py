@@ -64,9 +64,12 @@ class OllamaServer:
                 send_log("Suggestion cancelled", params.position.line, params.position.character, params.text_document.uri)
                 return []
 
-            self.curr_suggestion['suggestion'] += chunk['message']['content']
+            self.curr_suggestion['suggestion'] += chunk['response']
             if self.stream_suggestion:
-                self.send_suggestion(self.curr_suggestion['suggestion'], self.curr_suggestion['line'], self.curr_suggestion['character'], suggestion_type='stream')
+                self.send_suggestion(self.curr_suggestion['suggestion'],
+                                     self.curr_suggestion['line'],
+                                     self.curr_suggestion['character'],
+                                     suggestion_type='stream')
             
         end = time.time()
         self.send_suggestion(self.curr_suggestion['suggestion'], self.curr_suggestion['line'], self.curr_suggestion['character'], suggestion_type='completion')

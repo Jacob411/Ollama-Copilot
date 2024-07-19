@@ -1,4 +1,5 @@
 # Ideas for features/Improvements
+- [ ] Explore more ollama features, such as generate and context
 - [ ] limit when to offer multiline completion (middle of line) and also make it work with multi line smoothly
 - [ ] add config options
 - [ ] Improve when to trigger completion.

@@ -28,6 +28,7 @@ if not configs.ollama_lsp then
 end
 
 
+
 function on_complete(err, result, ctx, config)
   local line = ctx['params']['position']['line']
   local col = ctx['params']['position']['character']
