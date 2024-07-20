@@ -16,9 +16,10 @@ if not configs.ollama_lsp then
       end,
       settings = {},
       init_options = {
-        stream_suggestion = true,
+        model_name = "starcoder:1b",
+        stream_suggestion = false,
         ollama_model_opts = {
-          stop = {'\n'},
+         -- stop = {'\n'},
           num_predict =  40,
           temperature = 0.4
         },
@@ -37,7 +38,6 @@ function on_complete(err, result, ctx, config)
 end
 
 lspconfig.ollama_lsp.setup{
-
   capabilities = capabilities,
   on_attach = function(_, bufnr)
     vim.api.nvim_create_user_command("OllamaSuggestion", ollama_client.request_completions, {desc = "Get Ollama Suggestion"})    
@@ -45,6 +45,7 @@ lspconfig.ollama_lsp.setup{
     vim.api.nvim_create_user_command("OllamaReject", ghost_text.delete_first_extmark, {desc = "Rejects displayed Ollama Suggestion"})
      
   end,
+
 
 
   handlers = {

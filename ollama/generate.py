@@ -48,6 +48,8 @@ stream = client.generate(
     stream=True
 )
 
+
+
 for chunk in stream:
     print(chunk)
     #print(chunk['response'], end='', flush=True)

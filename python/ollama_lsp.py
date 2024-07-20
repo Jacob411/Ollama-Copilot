@@ -4,6 +4,7 @@ import time
 import ollama
 import requests
 from completion_engine import CompletionEngine
+import re
 # TODO: Get suggestion to appear in editor always.
 # ------------------ LSP Server ----------------
 def send_log(message, line, col, file=""): 
@@ -35,8 +36,9 @@ class OllamaServer:
     def on_initialize(self, params: types.InitializeParams):
         headers = {'Content-type': 'application/json'}
         send_log(f"Initialized, Opts: {params.initialization_options}", 0, 0)
+        init_options = params.initialization_options
 
-        self.engine = CompletionEngine("deepseek-coder:base", options=params.initialization_options.get('ollama_model_opts', {}))
+        self.engine = CompletionEngine(init_options.get('model_name', "deepseek-coder:base"), options=init_options.get('ollama_model_opts', {}))
         self.stream_suggestion = params.initialization_options.get('stream_suggestion', False)
 
         return {
@@ -48,9 +50,8 @@ class OllamaServer:
                 }
             }
         }
-
+    
     def on_completion(self, params: types.CompletionParams):
-        start = time.time()
         send_log("Completion requested", params.position.line, params.position.character, params.text_document.uri)
 
         document = self.server.workspace.get_text_document(params.text_document.uri)
@@ -65,16 +66,22 @@ class OllamaServer:
                 return []
 
             self.curr_suggestion['suggestion'] += chunk['response']
+            if 'context' in chunk:
+                total_duration = chunk['total_duration'] / 10**9
+                load_duration = chunk['load_duration'] / 10**9
+                prompt_eval_duration = chunk['prompt_eval_duration'] / 10**9
+                eval_count = chunk['eval_count']
+                eval_duration = chunk['eval_duration'] / 10**9
+                timing_str = f"Total duration: {total_duration}, Load duration: {load_duration},  Prompt eval duration: {prompt_eval_duration}, Eval count: {eval_count}, Eval duration: {eval_duration}"
             if self.stream_suggestion:
                 self.send_suggestion(self.curr_suggestion['suggestion'],
                                      self.curr_suggestion['line'],
                                      self.curr_suggestion['character'],
                                      suggestion_type='stream')
             
-        end = time.time()
-        self.send_suggestion(self.curr_suggestion['suggestion'], self.curr_suggestion['line'], self.curr_suggestion['character'], suggestion_type='completion')
+        self.send_suggestion(self.strip_suggestion(self.curr_suggestion['suggestion']), self.curr_suggestion['line'], self.curr_suggestion['character'], suggestion_type='completion')
         
-        send_log(f"Suggestion completed in {end-start}: {self.curr_suggestion['suggestion']}",
+        send_log(f"{timing_str}: {self.curr_suggestion['suggestion']}",
                     params.position.line,
                     params.position.character,
                     params.text_document.uri)
@@ -107,6 +114,9 @@ class OllamaServer:
             }}
             )
 
+    def strip_suggestion(self, text):
+      stripped_text = text.rstrip('\n')
+      return re.sub(r'\n{2,}', '\n', stripped_text)
 
     
     def start(self):
