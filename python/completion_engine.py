@@ -18,12 +18,9 @@ class CompletionEngine:
     def fim_complete(self, lines, line, character):
         lines[line] = lines[line][:character] + "<｜fim▁hole｜>" + lines[line][character:]
         content = '<｜fim▁begin｜>' + "\n".join(lines) + '<｜fim▁end｜>'
-        return self.client.chat(
+        return self.client.generate(
             model= self.model, 
-            messages=[{
-            'role': 'user',
-            'content': content,
-            }],                 
+            prompt= content,
             stream=True,
             options = self.options
         )

@@ -49,11 +49,13 @@ stream = client.generate(
 )
 
 
+output = ''
 
 for chunk in stream:
     print(chunk)
+    output += chunk['response']
     #print(chunk['response'], end='', flush=True)
-
+print(output)
 # print("\nTime taken: ", time.time()-start)
 # print('<===========================>')
 

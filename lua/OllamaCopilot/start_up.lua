@@ -16,19 +16,17 @@ if not configs.ollama_lsp then
       end,
       settings = {},
       init_options = {
-        model_name = "starcoder:1b",
-        stream_suggestion = false,
+        model_name = "deepseek-coder:base",
+        stream_suggestion = true,
         ollama_model_opts = {
          -- stop = {'\n'},
           num_predict =  40,
-          temperature = 0.4
         },
       },
     },
   }
 end
-
-
+  
 
 function on_complete(err, result, ctx, config)
   local line = ctx['params']['position']['line']

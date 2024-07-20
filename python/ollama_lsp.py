@@ -53,12 +53,14 @@ class OllamaServer:
     
     def on_completion(self, params: types.CompletionParams):
         send_log("Completion requested", params.position.line, params.position.character, params.text_document.uri)
-
+        return []
         document = self.server.workspace.get_text_document(params.text_document.uri)
         lines = document.lines
         suggestion_stream = self.engine.complete(lines, params.position.line, params.position.character)
 
         self.curr_suggestion = {'line' : params.position.line + 1, 'character' : params.position.character, 'suggestion': ''}
+        timing_str = ''
+
         for chunk in suggestion_stream:
             if self.cancel_suggestion:
                 self.cancel_suggestion = False
