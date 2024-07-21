@@ -28,6 +28,29 @@ local default_config = {
 
 
 
+
+local enabled = true
+
+local function disable_plugin()
+    if not enabled then return end
+
+    local clients = vim.lsp.get_active_clients()
+
+    for _, client in ipairs(clients) do
+        if client.name == 'ollama_lsp' then
+            client.stop()
+        end
+    end
+    -- Remove key mappings
+    -- vim.api.nvim_del_keymap('n', '<leader>os')
+    -- vim.api.nvim_del_keymap('n', '<leader>oa')
+    -- vim.api.nvim_del_keymap('n', '<leader>or')
+    -- vim.api.nvim_del_keymap('i', '<C-a>')
+    --
+    -- Set the enabled flag to false
+    enabled = false
+end
+
 -- Merge user config with default config
 local function merge_config(user_config)
     if user_config then
@@ -89,10 +112,26 @@ function M.setup(user_config)
             end,
             ['$/tokenStream'] = function(err, result, ctx, config)
                 local opts = ghost_text.build_opts_from_text(result['completion']['total'])
-                ghost_text.add_extmark(result['line'], result['character'], opts)
+                local cursor_line, cursor_col = unpack(vim.api.nvim_win_get_cursor(0))
+
+                if cursor_line == result['line'] and cursor_col == result['character'] then
+                    ghost_text.add_extmark(result['line'], result['character'], opts)
+                elseif result['completion']['total'] == '' then
+                    ghost_text.delete_first_extmark()
+                end
             end,
+            ['$/clearSuggestion'] = function(err, result, ctx, config)
+                print('USED NEW METHOD')
+                ghost_text.delete_first_extmark()
+            end
         }
     }
+
+
+
+    vim.api.nvim_command('augroup OllamaCopilot') -- TODO: Add autocommands to clear extmarks on insert mode and change buffer
+
+    vim.api.nvim_create_user_command("DisableOllamaCopilot", function() disable_plugin() end, {desc = "Disables Ollama Copilot"})
 
     -- Set keymaps
     vim.api.nvim_set_keymap('n', config.keymaps.suggestion, '<Cmd>OllamaSuggestion<CR>', { noremap = true })

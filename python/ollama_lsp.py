@@ -5,11 +5,18 @@ import ollama
 import requests
 from completion_engine import CompletionEngine
 import re
+
+# TODO: Add a second custom notification that clears will clear the suggestion, instead of sending an empty one.
+
+
 # TODO: Get suggestion to appear in editor always.
 # ------------------ LSP Server ----------------
 def send_log(message, line, col, file=""): 
     headers = {'Content-type': 'application/json'}
-    requests.post("http://localhost:8000",headers=headers, json={"message": message, "line": line, "col": col, "file": file.split('/')[-1]})
+    requests.post("http://localhost:8000",headers=headers, json={"message": message, "file": file.split('/')[-1]})
+
+class SharedState:
+    busy = False
 
 class OllamaServer:
 
@@ -25,10 +32,10 @@ class OllamaServer:
         def initialize(params: types.InitializeParams):
             return self.on_initialize(params)
         
-        @self.server.feature(types.TEXT_DOCUMENT_COMPLETION)
-        def completions(params: types.CompletionParams):
-            return self.on_completion(params)
-        
+        # @self.server.feature(types.TEXT_DOCUMENT_COMPLETION)
+        # def completions(params: types.CompletionParams):
+        #     return self.on_completion(params)
+        # 
         @self.server.feature(types.TEXT_DOCUMENT_DID_CHANGE)
         def change(params: types.DidChangeTextDocumentParams):
             return self.on_change(params)
@@ -52,7 +59,8 @@ class OllamaServer:
         }
     
     def on_completion(self, params: types.CompletionParams):
-        send_log("Completion requested", params.position.line, params.position.character, params.text_document.uri)
+
+        send_log(f"Completion requested", params.position.line, params.position.character, params.text_document.uri)
         document = self.server.workspace.get_text_document(params.text_document.uri)
         lines = document.lines
         suggestion_stream = self.engine.complete(lines, params.position.line, params.position.character)
@@ -100,7 +108,8 @@ class OllamaServer:
          
     def on_change(self, params: types.DidChangeTextDocumentParams):
         change = params.content_changes[0]
-        send_log(f"Change: {change.text}", change.range.start.line, change.range.start.character, params.text_document.uri)
+        send_log(f"Change: {change.text} count: {self.count}", change.range.start.line, change.range.start.character, params.text_document.uri)
+        self.count += 1
         if change.text == self.curr_suggestion['suggestion'][0:len(change.text)] and len(change.text) > 0: 
             self.curr_suggestion['suggestion'] = self.curr_suggestion['suggestion'][len(change.text):]
             self.curr_suggestion['character'] += len(change.text)
@@ -116,7 +125,7 @@ class OllamaServer:
                           params.text_document.uri
             )
             self.curr_suggestion = {'line' : 1, 'character' : 0, 'suggestion': ''}
-            self.send_suggestion('', 1, 0, suggestion_type='clear_suggestion')
+            self.clear_suggestion()
             # Trigger a new completion
             position = types.Position(line=change.range.end.line, character=change.range.end.character + 1)
             completion_params = types.CompletionParams(
@@ -131,6 +140,10 @@ class OllamaServer:
             self.on_completion(completion_params)
         return
             
+    def clear_suggestion(self):
+        self.server.send_notification('$/clearSuggestion',{'message' : "clear current"})
+
+
     def send_suggestion(self, suggestion, line, col, suggestion_type='miscellaneous'):
         self.server.send_notification('$/tokenStream', {
             'line' : line,
