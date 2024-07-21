@@ -26,6 +26,8 @@ local default_config = {
     },
 }
 
+
+
 -- Merge user config with default config
 local function merge_config(user_config)
     if user_config then
@@ -96,7 +98,7 @@ function M.setup(user_config)
     vim.api.nvim_set_keymap('n', config.keymaps.suggestion, '<Cmd>OllamaSuggestion<CR>', { noremap = true })
     vim.api.nvim_set_keymap('n', config.keymaps.accept, '<Cmd>OllamaAccept<CR>', { noremap = true })
     vim.api.nvim_set_keymap('n', config.keymaps.reject, '<Cmd>OllamaReject<CR>', { noremap = true })
-    vim.api.nvim_set_keymap('i', config.keymaps.insert_accept, '<Esc>:OllamaAccept<CR>a', {noremap = true, silent = true})
+    vim.api.nvim_set_keymap('i', config.keymaps.insert_accept, '<Esc>:OllamaAccept<CR>$a', {noremap = true, silent = true})
 end
 
 return M

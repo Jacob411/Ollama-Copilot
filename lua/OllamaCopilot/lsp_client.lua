@@ -17,7 +17,6 @@ function get_client_id(client_name)
     return client_id
 end
 
-
 -- Function to cancel the current LSP request
 function cancel_lsp_request()
     local client_id = get_client_id('ollama_lsp')

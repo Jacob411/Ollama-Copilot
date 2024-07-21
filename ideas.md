@@ -1,4 +1,6 @@
 # Ideas for features/Improvements
+- [ ] Fix configs (stop should default to newline but if any opts are specified it should be overrideen even if stop isnt expcitily defined)
+- [ ] user command to stop the plugin
 - [ ] add chat bot support for code help. (granite-code is a good option)
 - [ ] limit when to offer multiline completion (middle of line) and also make it work with multi line smoothly
 - [ ] Improve when to trigger completion.

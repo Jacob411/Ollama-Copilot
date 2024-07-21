@@ -46,7 +46,7 @@ class OllamaServer:
                 "textDocumentSync": types.TextDocumentSyncKind.Incremental,
                 "completionProvider": {
                     "resolveProvider": True,
-                    "triggerCharacters": []
+                    "triggerCharacters": [' ']
                 }
             }
         }
@@ -63,7 +63,9 @@ class OllamaServer:
         for chunk in suggestion_stream:
             if self.cancel_suggestion:
                 self.cancel_suggestion = False
-                send_log("Suggestion cancelled", params.position.line, params.position.character, params.text_document.uri)
+                send_log("Suggestion cancelled",
+                         params.position.line,
+                         params.position.character, params.text_document.uri)
                 return []
 
             self.curr_suggestion['suggestion'] += chunk['response']
@@ -73,14 +75,21 @@ class OllamaServer:
                 prompt_eval_duration = chunk['prompt_eval_duration'] / 10**9
                 eval_count = chunk['eval_count']
                 eval_duration = chunk['eval_duration'] / 10**9
-                timing_str = f"Total duration: {total_duration}, Load duration: {load_duration},  Prompt eval duration: {prompt_eval_duration}, Eval count: {eval_count}, Eval duration: {eval_duration}"
+                timing_str = f"""
+                    Total duration: {total_duration},
+                    Load duration: {load_duration},
+                    Prompt eval duration: {prompt_eval_duration},
+                    Eval count: {eval_count},
+                    Eval duration: {eval_duration}"""
             if self.stream_suggestion:
                 self.send_suggestion(self.curr_suggestion['suggestion'],
                                      self.curr_suggestion['line'],
                                      self.curr_suggestion['character'],
                                      suggestion_type='stream')
             
-        self.send_suggestion(self.strip_suggestion(self.curr_suggestion['suggestion']), self.curr_suggestion['line'], self.curr_suggestion['character'], suggestion_type='completion')
+        self.send_suggestion(self.strip_suggestion(self.curr_suggestion['suggestion']),
+                             self.curr_suggestion['line'], self.curr_suggestion['character'],
+                             suggestion_type='completion')
         
         send_log(f"{timing_str}: {self.curr_suggestion['suggestion']}",
                     params.position.line,
@@ -91,6 +100,7 @@ class OllamaServer:
          
     def on_change(self, params: types.DidChangeTextDocumentParams):
         change = params.content_changes[0]
+        send_log(f"Change: {change.text}", change.range.start.line, change.range.start.character, params.text_document.uri)
         if change.text == self.curr_suggestion['suggestion'][0:len(change.text)] and len(change.text) > 0: 
             self.curr_suggestion['suggestion'] = self.curr_suggestion['suggestion'][len(change.text):]
             self.curr_suggestion['character'] += len(change.text)
@@ -100,9 +110,25 @@ class OllamaServer:
                                  suggestion_type='fill_suggestion')
             return
         else:
+            send_log("Clearing suggestion",
+                          change.range.end.line,
+                          change.range.end.character,
+                          params.text_document.uri
+            )
             self.curr_suggestion = {'line' : 1, 'character' : 0, 'suggestion': ''}
             self.send_suggestion('', 1, 0, suggestion_type='clear_suggestion')
-
+            # Trigger a new completion
+            position = types.Position(line=change.range.end.line, character=change.range.end.character + 1)
+            completion_params = types.CompletionParams(
+                text_document=params.text_document,
+                position=position,
+                context=types.CompletionContext(trigger_kind=types.CompletionTriggerKind.Invoked)
+            )
+            # Here we can add logic for when to trigger a completion, 
+            # For now, only dont trigger if the change is a deletion
+            if len(change.text) == 0:
+                return
+            self.on_completion(completion_params)
         return
             
     def send_suggestion(self, suggestion, line, col, suggestion_type='miscellaneous'):
