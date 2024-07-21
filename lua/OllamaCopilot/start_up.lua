@@ -1,8 +1,8 @@
 local lspconfig = require 'lspconfig'
 local capabilities = require('cmp_nvim_lsp').default_capabilities()
 --local capabilities = vim.lsp.protocol.make_client_capabilities()
-local ghost_text = require 'lua.OllamaCopilot.ghost_text'
-local ollama_client = require 'lua.OllamaCopilot.lsp_client' 
+local ghost_text = require 'OllamaCopilot.ghost_text'
+local ollama_client = require 'OllamaCopilot.lsp_client' 
 
 local configs = require 'lspconfig.configs'
 -- Check if the config is already defined (useful when reloading this file)
@@ -21,6 +21,7 @@ if not configs.ollama_lsp then
         ollama_model_opts = {
          -- stop = {'\n'},
           num_predict =  40,
+          temperature = 0.1
         },
       },
     },
@@ -62,3 +63,6 @@ vim.api.nvim_set_keymap('n', '<leader>os', '<Cmd>OllamaSuggestion<CR>', { norema
 vim.api.nvim_set_keymap('n', '<leader>oa', '<Cmd>OllamaAccept<CR>', { noremap = true })
 vim.api.nvim_set_keymap('n', '<leader>or', '<Cmd>OllamaReject<CR>', { noremap = true })
 vim.api.nvim_set_keymap('i', '<C-a>', '<Esc>:OllamaAccept<CR>a', {noremap = true, silent = true})
+
+
+
