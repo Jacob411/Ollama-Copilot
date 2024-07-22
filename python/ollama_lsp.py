@@ -1,10 +1,9 @@
 from pygls.server import LanguageServer
 from lsprotocol import types
-import time
-import ollama
 import requests
 from completion_engine import CompletionEngine
 import re
+import asyncio
 
 # TODO: Add a second custom notification that clears will clear the suggestion, instead of sending an empty one.
 
@@ -15,8 +14,9 @@ def send_log(message, line, col, file=""):
     headers = {'Content-type': 'application/json'}
     requests.post("http://localhost:8000",headers=headers, json={"message": message, "file": file.split('/')[-1]})
 
-class SharedState:
-    busy = False
+async def async_generator_wrapper(generator):
+    for item in generator:
+        yield item
 
 class OllamaServer:
 
@@ -25,6 +25,9 @@ class OllamaServer:
         self.engine = None # Wait for initialization 
         self.curr_suggestion = {'line' : 0, 'character' : 0, 'suggestion': ''}
         self.cancel_suggestion = False
+        self.debounce_time = 0.5  # Debounce time in seconds
+        self.last_completion_request = None
+        self.debounce_task = None
         self.register_features()
     
     def register_features(self):
@@ -57,18 +60,31 @@ class OllamaServer:
                 }
             }
         }
-    
-    def on_completion(self, params: types.CompletionParams):
+    def debounce_completion(self, params: types.CompletionParams):
+        self.last_completion_request = params
+        if self.debounce_task:
+            self.debounce_task.cancel()
+        self.debounce_task = asyncio.create_task(self.handle_debounce())
+        return []
+
+    async def handle_debounce(self):
+        await asyncio.sleep(self.debounce_time)
+        if self.last_completion_request:
+            params = self.last_completion_request
+            self.last_completion_request = None
+            await self.on_completion(params)
+
+    async def on_completion(self, params: types.CompletionParams):
 
         send_log(f"Completion requested", params.position.line, params.position.character, params.text_document.uri)
         document = self.server.workspace.get_text_document(params.text_document.uri)
         lines = document.lines
-        suggestion_stream = self.engine.complete(lines, params.position.line, params.position.character)
+        suggestion_stream = async_generator_wrapper(self.engine.complete(lines, params.position.line, params.position.character))
 
         self.curr_suggestion = {'line' : params.position.line + 1, 'character' : params.position.character, 'suggestion': ''}
         timing_str = ''
 
-        for chunk in suggestion_stream:
+        async for chunk in suggestion_stream:
             if self.cancel_suggestion:
                 self.cancel_suggestion = False
                 send_log("Suggestion cancelled",
@@ -108,8 +124,7 @@ class OllamaServer:
          
     def on_change(self, params: types.DidChangeTextDocumentParams):
         change = params.content_changes[0]
-        send_log(f"Change: {change.text} count: {self.count}", change.range.start.line, change.range.start.character, params.text_document.uri)
-        self.count += 1
+        send_log(f"Change: {change.text}", change.range.start.line, change.range.start.character, params.text_document.uri)
         if change.text == self.curr_suggestion['suggestion'][0:len(change.text)] and len(change.text) > 0: 
             self.curr_suggestion['suggestion'] = self.curr_suggestion['suggestion'][len(change.text):]
             self.curr_suggestion['character'] += len(change.text)
@@ -119,11 +134,6 @@ class OllamaServer:
                                  suggestion_type='fill_suggestion')
             return
         else:
-            send_log("Clearing suggestion",
-                          change.range.end.line,
-                          change.range.end.character,
-                          params.text_document.uri
-            )
             self.curr_suggestion = {'line' : 1, 'character' : 0, 'suggestion': ''}
             self.clear_suggestion()
             # Trigger a new completion
@@ -137,7 +147,7 @@ class OllamaServer:
             # For now, only dont trigger if the change is a deletion
             if len(change.text) == 0:
                 return
-            self.on_completion(completion_params)
+            self.debounce_completion(completion_params)
         return
             
     def clear_suggestion(self):

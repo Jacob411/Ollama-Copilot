@@ -1,5 +1,5 @@
 require('OllamaCopilot')
--- require('OllamaCopilot').setup({}) -- when testing locally
+--require('OllamaCopilot').setup({}) -- when testing locally
 --
 -- -- Default configuration
 -- local default_config = {

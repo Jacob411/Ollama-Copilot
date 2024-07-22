@@ -29,6 +29,7 @@ local default_config = {
 
 
 
+
 local enabled = true
 
 local function disable_plugin()
@@ -126,6 +127,9 @@ function M.setup(user_config)
             end
         }
     }
+
+
+    
 
 
 
