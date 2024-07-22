@@ -6,7 +6,7 @@ Ollama Copilot allows users to integrate their Ollama code completion models int
 Offers **Suggestion Streaming** which will stream the completions into your editor as they are generated from the model.
 
 ### Optimizations:
-- [x] Debouncing for requests that an lsp sends, to avoid overflows of Ollama requests which lead to high CPU utilization.
+- [x] Debouncing for subsequent completion requests to avoid overflows of Ollama requests which lead to CPU over-utilization.
 - [x] Full control over triggers, using textChange events instead of NeoVim client requests.
 ### Features
 - [x] Language server which can provide code completions from an Ollama model
@@ -16,7 +16,7 @@ Offers **Suggestion Streaming** which will stream the completions into your edit
 
 ## Install
 ### Requires
-To use Ollama-Copilot, you need to have Ollama installed [https://github.com/ollama/ollama](https://github.com/ollama/ollama):  
+To use Ollama-Copilot, you need to have Ollama installed [github.com/ollama/ollama](https://github.com/ollama/ollama):  
 ```bash
 curl -fsSL https://ollama.com/install.sh | sh
 ```
@@ -60,7 +60,7 @@ Lazy:
   }
 },
 ```
-For more Ollama customization, see [https://github.com/ollama/ollama/blob/main/docs/modelfile.md](https://github.com/ollama/ollama/blob/main/docs/modelfile.md)
+For more Ollama customization, see [github.com/ollama/ollama/blob/main/docs/modelfile.md](https://github.com/ollama/ollama/blob/main/docs/modelfile.md)
 
 ## Usage
 Ollama copilot language server will attach when you enter a buffer and can be viewed using:
