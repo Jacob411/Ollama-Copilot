@@ -1,40 +1,84 @@
-
 # Ollama Copilot
 ## Overview
-Ollama Copilot is a work in progress. The goal is to allow users to integrate their Ollama code completion models into their IDEs, giving GitHub Copilot-like completions. First integration will be in Neovim.
+### Copilot-like Tab Completion for NeoVim
+Ollama Copilot allows users to integrate their Ollama code completion models into NeoVim, giving GitHub Copilot-like tab completions.  
+  
+Offers **Suggestion Streaming** which will stream the completions into your editor as they are generated from the model.
 
-## Features
+### Optimizations:
+- [x] Debouncing for requests that an lsp sends, to avoid overflows of Ollama requests which lead to high CPU utilization.
+- [x] Full control over triggers, using textChange events instead of NeoVim client requests.
+### Features
 - [x] Language server which can provide code completions from an Ollama model
 - [x] Ghost text completions which can be inserted into the editor
-- [x] Manually requested ghost text completions which can be inserted into the editor (OllamaSuggestion User Command)
-- [ ] Integration with Neovim (in progress)
-- [ ] Integration with other IDEs
+- [x] Streamed ghost text completions which populate in real-time
 
-## Installation
+
+## Install
+### Requires
 To use Ollama-Copilot, you need to have Ollama installed [https://github.com/ollama/ollama](https://github.com/ollama/ollama):  
 ```bash
 curl -fsSL https://ollama.com/install.sh | sh
 ```
-Clone this repository:
+Also, the language server runs on Python, and requires two libraries (Can also be found in python/requirements.txt)
 ```bash
-git clone https://github.com/Jacob411/Ollama-Copilot.git
-cd Ollama-Copilot
+pip install pygls ollama
 ```
-The langauge server runs in python, and will require a few dependencies:
-```bash
-cd Ollama-Copilot
-cd python
-pip install -r requirements.txt
+Make sure you have the model you want to use installed, a catalog can be found here: [ollama.com/library](https://ollama.com/library?q=code)
 ```
+# To view your available models:
+ollama ls
+
+# To pull a new model
+ollama pull <Model name>
+```
+### Using a plugin manager
+Lazy:
+```lua
+{"Jacob411/Ollama-Copilot"}
+```
+```lua
+-- Custom configuration (defaults shown)
+{
+  'jacob411/Ollama-Copilot',
+  opts = {
+    model_name = "deepseek-coder:base",
+    stream_suggestion = false,
+    python_command = "python3",
+    filetypes = {'*'},
+    ollama_model_opts = {
+      num_predict = 40,
+      temperature = 0.1,
+      stop = {'\n'}
+    },
+  keymaps = {
+    suggestion = '<leader>os',
+    accept = '<leader>oa',
+    reject = '<leader>or',
+    insert_accept = '<C-a>',
+  },
+  }
+},
+```
+For more Ollama customization, see [https://github.com/ollama/ollama/blob/main/docs/modelfile.md](https://github.com/ollama/ollama/blob/main/docs/modelfile.md)
 
 ## Usage
-To run the language server, run the following command:
-
-```python
-python lsp/ollama_lsp.py
+Ollama copilot language server will attach when you enter a buffer and can be viewed using:
+```lua
+:LspInfo
 ```
+### Recomendations
+Smaller models (<3 billion parameters) work best for tab completion tasks, providing low latency and minimal CPU usage.
+- [deepseek-coder](https://ollama.com/library/deepseek-coder:1.3b) - 1.3B
+- [starcoder](https://ollama.com/library/starcoder:1b) - 1B
+- [codegemma](https://ollama.com/library/codegemma:2b) - 2B
+- [starcoder2](https://ollama.com/library/starcoder2:3b) - 3B
+  
 ## Contributing
 Contributions are welcome! If you have any ideas for new features, improvements, or bug fixes, please open an issue or submit a pull request.
 
+I am hopeful to add more on the model side as well, as I am interested in finetuning the models and implementing RAG techniques, moving outside of using just Ollama.
+
 ## License
 This project is licensed under the MIT License.
+

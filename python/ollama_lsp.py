@@ -153,7 +153,6 @@ class OllamaServer:
     def clear_suggestion(self):
         self.server.send_notification('$/clearSuggestion',{'message' : "clear current"})
 
-
     def send_suggestion(self, suggestion, line, col, suggestion_type='miscellaneous'):
         self.server.send_notification('$/tokenStream', {
             'line' : line,

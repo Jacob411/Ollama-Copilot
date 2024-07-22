@@ -29,7 +29,6 @@ local default_config = {
 
 
 
-
 local enabled = true
 
 local function disable_plugin()
@@ -122,14 +121,11 @@ function M.setup(user_config)
                 end
             end,
             ['$/clearSuggestion'] = function(err, result, ctx, config)
-                print('USED NEW METHOD')
                 ghost_text.delete_first_extmark()
             end
         }
     }
 
-
-    
 
 
 
