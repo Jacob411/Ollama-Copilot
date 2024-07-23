@@ -1,4 +1,7 @@
 # Ollama Copilot
+<img src="assets/demoV1.gif" width="900"  alt="Demo GIF">
+
+
 ## Overview
 ### Copilot-like Tab Completion for NeoVim
 Ollama Copilot allows users to integrate their Ollama code completion models into NeoVim, giving GitHub Copilot-like tab completions.  
