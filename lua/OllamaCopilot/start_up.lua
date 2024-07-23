@@ -28,7 +28,6 @@ local default_config = {
 
 
 
-
 local enabled = true
 
 local function disable_plugin()
@@ -126,10 +125,11 @@ function M.setup(user_config)
         }
     }
 
+    
 
 
-
-    vim.api.nvim_command('augroup OllamaCopilot') -- TODO: Add autocommands to clear extmarks on insert mode and change buffer
+    vim.api.nvim_command('augroup OllamaCopilot')
+    -- TODO: Add autocommands to clear extmarks on insert mode and change buffer
 
     vim.api.nvim_create_user_command("DisableOllamaCopilot", function() disable_plugin() end, {desc = "Disables Ollama Copilot"})
 
@@ -139,6 +139,7 @@ function M.setup(user_config)
     vim.api.nvim_set_keymap('n', config.keymaps.reject, '<Cmd>OllamaReject<CR>', { noremap = true })
     vim.api.nvim_set_keymap('i', config.keymaps.insert_accept, '<Esc>:OllamaAccept<CR>$a', {noremap = true, silent = true})
 end
+
 
 return M
 

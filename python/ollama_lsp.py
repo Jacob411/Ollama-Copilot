@@ -5,10 +5,9 @@ from completion_engine import CompletionEngine
 import re
 import asyncio
 
-# TODO: Add a second custom notification that clears will clear the suggestion, instead of sending an empty one.
+# TODO: Add logging
+# TODO: update so that on change events like clear are not held up by on going completions (maybe client side)
 
-
-# TODO: Get suggestion to appear in editor always.
 # ------------------ LSP Server ----------------
 def send_log(message, line, col, file=""): 
     #headers = {'Content-type': 'application/json'}
@@ -60,6 +59,7 @@ class OllamaServer:
                 }
             }
         }
+
     def debounce_completion(self, params: types.CompletionParams):
         self.last_completion_request = params
         if self.debounce_task:
@@ -162,6 +162,7 @@ class OllamaServer:
                 'type' : suggestion_type,
             }}
             )
+
 
     def strip_suggestion(self, text):
       stripped_text = text.rstrip('\n')
