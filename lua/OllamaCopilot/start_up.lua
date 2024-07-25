@@ -5,8 +5,11 @@ local ghost_text = require 'OllamaCopilot.ghost_text'
 local ollama_client = require 'OllamaCopilot.lsp_client'
 local configs = require 'lspconfig.configs'
 
+
 local M = {}
 
+-- TODO : add demo gif which shows tabbing the completion
+-- TODO : smoother experience (no flickering) (need to not block the main thread with completion, or add client side logic to handle changes)
 -- Default configuration
 local default_config = {
     model_name = "deepseek-coder:base",
@@ -128,6 +131,7 @@ function M.setup(user_config)
     
 
 
+
     vim.api.nvim_command('augroup OllamaCopilot')
     -- TODO: Add autocommands to clear extmarks on insert mode and change buffer
 
@@ -138,6 +142,21 @@ function M.setup(user_config)
     vim.api.nvim_set_keymap('n', config.keymaps.accept, '<Cmd>OllamaAccept<CR>', { noremap = true })
     vim.api.nvim_set_keymap('n', config.keymaps.reject, '<Cmd>OllamaReject<CR>', { noremap = true })
     vim.api.nvim_set_keymap('i', config.keymaps.insert_accept, '<Esc>:OllamaAccept<CR>$a', {noremap = true, silent = true})
+
+
+    vim.api.nvim_command('augroup END')
+    -- def function for the tab_complete
+    --
+    function tab_complete()
+      if ghost_text.is_visible() then
+        ghost_text.accept_first_extmark_lines()
+      else
+        vim.api.nvim_input("<Tab>")
+      end
+    end
+
+    vim.api.nvim_set_keymap("i", "<C-a>", "v:lua.tab_complete()",{expr = true, noremap = true})
+    
 end
 
 

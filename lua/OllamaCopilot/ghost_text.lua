@@ -76,10 +76,21 @@ function accept_first_extmark_lines()
   vim.api.nvim_buf_set_text(0, row, col, row, col, lines)
 end
 
+function is_visible()
+  -- checks to see if the ghost text is visible
+  -- if it is, return true
+  local data = vim.api.nvim_buf_get_extmark_by_id(0, ns_id, 1, { details = true })
+  if data then
+    return true
+  end
+  return false
+end 
+
 
 return {
   add_extmark = add_extmark,
   build_opts_from_text = build_opts_from_text,
   accept_first_extmark_lines = accept_first_extmark_lines,
   delete_first_extmark = delete_first_extmark,
+  is_visible = is_visible,
 }
