@@ -1,5 +1,5 @@
 # Ollama Copilot
-<img src="assets/demoV1.gif" width="900"  alt="Demo GIF">
+<img src="assets/demoV2.gif" width="900"  alt="Demo GIF">
 
 
 ## Overview
