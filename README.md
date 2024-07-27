@@ -48,19 +48,18 @@ Lazy:
     model_name = "deepseek-coder:base",
     stream_suggestion = false,
     python_command = "python3",
-    filetypes = {'*'},
+    filetypes = {'python', 'lua','vim', "markdown"},
     ollama_model_opts = {
-      num_predict = 40,
-      temperature = 0.1,
-      stop = {'\n'}
+        num_predict = 40,
+        temperature = 0.1,
+        stop = {'\n'}
     },
-  keymaps = {
-    suggestion = '<leader>os',
-    accept = '<leader>oa',
-    reject = '<leader>or',
-    insert_accept = '<C-a>',
-  },
-  }
+    keymaps = {
+        suggestion = '<leader>os',
+        reject = '<leader>or',
+        insert_accept = '<Tab>',
+    },
+}
 },
 ```
 For more Ollama customization, see [github.com/ollama/ollama/blob/main/docs/modelfile.md](https://github.com/ollama/ollama/blob/main/docs/modelfile.md)

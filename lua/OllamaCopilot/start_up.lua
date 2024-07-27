@@ -29,7 +29,6 @@ local default_config = {
     },
     keymaps = {
         suggestion = '<leader>os',
-        accept = '<leader>oa',
         reject = '<leader>or',
         insert_accept = '<Tab>',
     },
