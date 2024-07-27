@@ -19,7 +19,7 @@ local default_config = {
     model_name = "deepseek-coder:base",
     stream_suggestion = false,
     python_command = "python3",
-    filetypes = {'*'},
+    filetypes = {'python', 'lua','vim', "markdown"},
     ollama_model_opts = {
         num_predict = 40,
         temperature = 0.1,
@@ -47,12 +47,6 @@ local function disable_plugin()
             client.stop()
         end
     end
-    -- Remove key mappings
-    -- vim.api.nvim_del_keymap('n', '<leader>os')
-    -- vim.api.nvim_del_keymap('n', '<leader>oa')
-    -- vim.api.nvim_del_keymap('n', '<leader>or')
-    -- vim.api.nvim_del_keymap('i', '<C-a>')
-    --
     -- Set the enabled flag to false
     enabled = false
 end
@@ -104,15 +98,36 @@ function M.setup(user_config)
             },
         }
     end
-    function ollama_accept()
-        local visible = ghost_text.is_visible()
-        print("VISIBLE: " .. vim.inspect(visible))
-        if visible then
-            ghost_text.accept_first_extmark_lines()
-        else
-            vim.api.nvim_input("<Tab>")
+    function capture_tab_behavior()
+        -- Get the existing keymap for Tab in insert mode
+        local existing_tab_keymap = vim.api.nvim_get_keymap('i')
+        for _, keymap in ipairs(existing_tab_keymap) do
+            if keymap.lhs == '<Tab>' then
+                print(vim.inspect(keymap))
+                return keymap.callback
+            end
+        end
+        return function()
+            print('No original tab behavior found')
         end
     end
+
+    original_tab_behaviour = capture_tab_behavior()
+    function tab_complete()
+        local visible = ghost_text.is_visible()
+        if visible then
+            ghost_text.accept_first_extmark_lines()
+            -- move cursor to the end of the line
+            vim.api.nvim_command('normal! $')
+        else
+            original_tab_behaviour()
+        end
+    end
+    vim.keymap.set("i", "<Tab>", function()
+        tab_complete()
+    end)
+
+    
 
     lspconfig.ollama_lsp.setup{
         capabilities = capabilities,
@@ -152,6 +167,8 @@ function M.setup(user_config)
     -- TODO: Add autocommands to clear extmarks on insert mode and change buffer
 
     vim.api.nvim_create_user_command("DisableOllamaCopilot", function() disable_plugin() end, {desc = "Disables Ollama Copilot"})
+
+
 
     -- Set keymaps
     vim.api.nvim_set_keymap('n', config.keymaps.suggestion, '<Cmd>OllamaSuggestion<CR>', { noremap = true })
