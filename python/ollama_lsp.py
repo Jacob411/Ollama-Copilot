@@ -1,6 +1,6 @@
 from pygls.server import LanguageServer
 from lsprotocol import types
-#import requests
+import requests
 from completion_engine import CompletionEngine
 import re
 import asyncio

@@ -6,6 +6,7 @@ local ollama_client = require 'OllamaCopilot.lsp_client'
 local configs = require 'lspconfig.configs'
 
 -- TODO : update tabs to be uniform at the client side
+-- TODO : update keymaps for tabbing
 
 
 
@@ -30,7 +31,7 @@ local default_config = {
         suggestion = '<leader>os',
         accept = '<leader>oa',
         reject = '<leader>or',
-        insert_accept = '<C-a>',
+        insert_accept = '<Tab>',
     },
 }
 
@@ -104,7 +105,6 @@ function M.setup(user_config)
         local existing_tab_keymap = vim.api.nvim_get_keymap('i')
         for _, keymap in ipairs(existing_tab_keymap) do
             if keymap.lhs == '<Tab>' then
-                print(vim.inspect(keymap))
                 return keymap.callback
             end
         end
@@ -127,12 +127,14 @@ function M.setup(user_config)
             original_tab_behaviour()
         end
     end
-    vim.keymap.set("i", "<Tab>", function()
+    vim.keymap.set("i", config.keymaps.insert_accept, function()
         tab_complete()
     end)
 
     
 
+
+    
     lspconfig.ollama_lsp.setup{
         capabilities = capabilities,
         on_attach = function(_, bufnr)
@@ -176,7 +178,6 @@ function M.setup(user_config)
     vim.api.nvim_set_keymap('n', config.keymaps.suggestion, '<Cmd>OllamaSuggestion<CR>', { noremap = true })
     vim.api.nvim_set_keymap('i', '<C-a>', '<Cmd>OllamaAccept<CR>', { noremap = true })
     vim.api.nvim_set_keymap('n', config.keymaps.reject, '<Cmd>OllamaReject<CR>', { noremap = true })
-    vim.api.nvim_set_keymap('i', config.keymaps.insert_accept, '<Esc>:OllamaAccept<CR>$a', {noremap = true, silent = true})
 
 
     vim.api.nvim_command('augroup END')
