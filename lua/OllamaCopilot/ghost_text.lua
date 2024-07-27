@@ -30,6 +30,10 @@ function add_extmark(row, col, new_opts)
     return nil
   end
   local success, err = pcall(vim.api.nvim_buf_set_extmark, 0, ns_id, row - 1, col, new_opts)
+  -- if err and col == 1 then we set to 0 and try again
+  if not success and col == 1 then
+    success, err = pcall(vim.api.nvim_buf_set_extmark, 0, ns_id, row - 1, 0, new_opts)
+  end
 end
 
 function delete_first_extmark()
@@ -74,6 +78,9 @@ function accept_first_extmark_lines()
   local col = data[3]
   delete_first_extmark()
   vim.api.nvim_buf_set_text(0, row, col, row, col, lines)
+  -- return the end position of the text that was inserted
+  -- this is used to move the cursor to the end of the inserted text
+  return {row + #lines, col + #lines[#lines]}
 end
 
 function is_visible()

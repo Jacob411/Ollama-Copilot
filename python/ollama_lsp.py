@@ -1,12 +1,14 @@
 from pygls.server import LanguageServer
 from lsprotocol import types
-import requests
+#import requests
 from completion_engine import CompletionEngine
 import re
 import asyncio
 
 # TODO: Add logging
 # TODO: update so that on change events like clear are not held up by on going completions (maybe client side)
+# TODO: add async for onChange
+
 
 # ------------------ LSP Server ----------------
 def send_log(message, line, col, file=""): 

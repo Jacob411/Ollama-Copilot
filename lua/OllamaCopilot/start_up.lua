@@ -5,6 +5,7 @@ local ghost_text = require 'OllamaCopilot.ghost_text'
 local ollama_client = require 'OllamaCopilot.lsp_client'
 local configs = require 'lspconfig.configs'
 
+-- TODO : update tabs to be uniform at the client side
 
 
 
@@ -116,9 +117,12 @@ function M.setup(user_config)
     function tab_complete()
         local visible = ghost_text.is_visible()
         if visible then
-            ghost_text.accept_first_extmark_lines()
+            paste_end = ghost_text.accept_first_extmark_lines()
+            local row_offset = paste_end[1]
+            local col_offset = paste_end[2] + 10
             -- move cursor to the end of the line
-            vim.api.nvim_command('normal! $')
+            print(row_offset, col_offset)
+            vim.api.nvim_win_set_cursor(0, { row_offset, col_offset })
         else
             original_tab_behaviour()
         end
@@ -133,7 +137,7 @@ function M.setup(user_config)
         capabilities = capabilities,
         on_attach = function(_, bufnr)
             vim.api.nvim_create_user_command("OllamaSuggestion", ollama_client.request_completions, {desc = "Get Ollama Suggestion"})
-            vim.api.nvim_create_user_command("OllamaAccept", ollama_accept, {desc = "Accepts displayed Ollama Suggestion"})
+            vim.api.nvim_create_user_command("OllamaAccept", ghost_text.accept_first_extmark_lines, {desc = "Accepts displayed Ollama Suggestion"})
             vim.api.nvim_create_user_command("OllamaReject", ghost_text.delete_first_extmark, {desc = "Rejects displayed Ollama Suggestion"})
         end,
         handlers = {
@@ -145,11 +149,9 @@ function M.setup(user_config)
                 local opts = ghost_text.build_opts_from_text(result['completion']['total'])
                 local cursor_line, cursor_col = unpack(vim.api.nvim_win_get_cursor(0))
 
-                if cursor_line == result['line'] and cursor_col == result['character'] then
-                    ghost_text.add_extmark(result['line'], result['character'], opts)
-                elseif result['completion']['total'] == '' then
-                    ghost_text.delete_first_extmark()
-                end
+                print(result['completion']['total'])
+                ghost_text.add_extmark(result['line'], result['character'], opts)
+        
             end,
             ['$/clearSuggestion'] = function(err, result, ctx, config)
                 ghost_text.delete_first_extmark()
@@ -178,8 +180,6 @@ function M.setup(user_config)
 
 
     vim.api.nvim_command('augroup END')
-    -- def function for the tab_complete
-    --    vim.api.nvim_set_keymap("i", "<C-a>", "<Cmd",{expr = true, noremap = true})
     
 end
 
