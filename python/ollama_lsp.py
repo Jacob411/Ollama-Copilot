@@ -1,6 +1,6 @@
 from pygls.server import LanguageServer
 from lsprotocol import types
-import requests
+#import requests
 from completion_engine import CompletionEngine
 import re
 import asyncio
@@ -10,8 +10,8 @@ import asyncio
 
 # ------------------ LSP Server ----------------
 def send_log(message, line, col, file=""): 
-    headers = {'Content-type': 'application/json'}
-    requests.post("http://localhost:8000",headers=headers, json={"message": message, "file": file.split('/')[-1]})
+    # headers = {'Content-type': 'application/json'}
+    # requests.post("http://localhost:8000",headers=headers, json={"message": message, "file": file.split('/')[-1], "line" : line, "col" : col})
     return
 async def async_generator_wrapper(generator):
     for item in generator:

@@ -6,6 +6,10 @@ local ollama_client = require 'OllamaCopilot.lsp_client'
 local configs = require 'lspconfig.configs'
 
 
+
+
+
+
 local M = {}
 
 -- TODO : add demo gif which shows tabbing the completion
@@ -73,6 +77,7 @@ local function merge_config(user_config)
     return default_config
 end
 
+
 function M.setup(user_config)
     local cur_file = debug.getinfo(1, 'S').source
     -- strip the leading '@' and lua/OllamaCopilot/start_up.lua from the end
@@ -99,12 +104,21 @@ function M.setup(user_config)
             },
         }
     end
+    function ollama_accept()
+        local visible = ghost_text.is_visible()
+        print("VISIBLE: " .. vim.inspect(visible))
+        if visible then
+            ghost_text.accept_first_extmark_lines()
+        else
+            vim.api.nvim_input("<Tab>")
+        end
+    end
 
     lspconfig.ollama_lsp.setup{
         capabilities = capabilities,
         on_attach = function(_, bufnr)
             vim.api.nvim_create_user_command("OllamaSuggestion", ollama_client.request_completions, {desc = "Get Ollama Suggestion"})
-            vim.api.nvim_create_user_command("OllamaAccept", ghost_text.accept_first_extmark_lines, {desc = "Accepts displayed Ollama Suggestion"})
+            vim.api.nvim_create_user_command("OllamaAccept", ollama_accept, {desc = "Accepts displayed Ollama Suggestion"})
             vim.api.nvim_create_user_command("OllamaReject", ghost_text.delete_first_extmark, {desc = "Rejects displayed Ollama Suggestion"})
         end,
         handlers = {
@@ -128,8 +142,10 @@ function M.setup(user_config)
         }
     }
 
+
     
 
+    
 
 
     vim.api.nvim_command('augroup OllamaCopilot')
@@ -139,23 +155,14 @@ function M.setup(user_config)
 
     -- Set keymaps
     vim.api.nvim_set_keymap('n', config.keymaps.suggestion, '<Cmd>OllamaSuggestion<CR>', { noremap = true })
-    vim.api.nvim_set_keymap('n', config.keymaps.accept, '<Cmd>OllamaAccept<CR>', { noremap = true })
+    vim.api.nvim_set_keymap('i', '<C-a>', '<Cmd>OllamaAccept<CR>', { noremap = true })
     vim.api.nvim_set_keymap('n', config.keymaps.reject, '<Cmd>OllamaReject<CR>', { noremap = true })
     vim.api.nvim_set_keymap('i', config.keymaps.insert_accept, '<Esc>:OllamaAccept<CR>$a', {noremap = true, silent = true})
 
 
     vim.api.nvim_command('augroup END')
     -- def function for the tab_complete
-    --
-    function tab_complete()
-      if ghost_text.is_visible() then
-        ghost_text.accept_first_extmark_lines()
-      else
-        vim.api.nvim_input("<Tab>")
-      end
-    end
-
-    vim.api.nvim_set_keymap("i", "<C-a>", "v:lua.tab_complete()",{expr = true, noremap = true})
+    --    vim.api.nvim_set_keymap("i", "<C-a>", "<Cmd",{expr = true, noremap = true})
     
 end
 

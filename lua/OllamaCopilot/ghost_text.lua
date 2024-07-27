@@ -80,10 +80,13 @@ function is_visible()
   -- checks to see if the ghost text is visible
   -- if it is, return true
   local data = vim.api.nvim_buf_get_extmark_by_id(0, ns_id, 1, { details = true })
-  if data then
-    return true
+  if not data then
+    return false
   end
-  return false
+  if next(data) == nil then
+    return false
+  end
+  return true
 end 
 
 
