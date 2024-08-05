@@ -12,6 +12,8 @@ local configs = require 'lspconfig.configs'
 
 
 
+
+
 local M = {}
 
 -- TODO : add demo gif which shows tabbing the completion
@@ -126,11 +128,7 @@ function M.setup(user_config)
             original_tab_behaviour()
         end
     end
-    vim.keymap.set("i", config.keymaps.insert_accept, function()
-        tab_complete()
-    end)
 
-    
 
 
     
@@ -162,20 +160,29 @@ function M.setup(user_config)
 
 
     
+    
+    
 
     
 
 
     vim.api.nvim_command('augroup OllamaCopilot')
-    -- TODO: Add autocommands to clear extmarks on insert mode and change buffer
+    -- Auto commands
+    vim.api.nvim_create_autocmd("InsertLeave", {
+        pattern = "*",
+        callback = function()
+           ghost_text.delete_first_extmark()
+        end,
+    })
 
+    -- Keymaps
     vim.api.nvim_create_user_command("DisableOllamaCopilot", function() disable_plugin() end, {desc = "Disables Ollama Copilot"})
-
-
-
-    -- Set keymaps
+    vim.keymap.set("i", config.keymaps.insert_accept,
+        function()
+            tab_complete()
+        end
+    )
     vim.api.nvim_set_keymap('n', config.keymaps.suggestion, '<Cmd>OllamaSuggestion<CR>', { noremap = true })
-    vim.api.nvim_set_keymap('i', '<C-a>', '<Cmd>OllamaAccept<CR>', { noremap = true })
     vim.api.nvim_set_keymap('n', config.keymaps.reject, '<Cmd>OllamaReject<CR>', { noremap = true })
 
 
