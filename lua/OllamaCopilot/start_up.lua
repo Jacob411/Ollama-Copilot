@@ -131,6 +131,7 @@ function M.setup(user_config)
 
 
 
+
     
     lspconfig.ollama_lsp.setup{
         capabilities = capabilities,
