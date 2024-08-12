@@ -4,13 +4,13 @@
 
 ## Overview
 ### Copilot-like Tab Completion for NeoVim
-Ollama Copilot allows users to integrate their Ollama code completion models into NeoVim, giving GitHub Copilot-like tab completions.  
+Ollama Copilot allows users to integrate their Ollama code completion models into Neovim, giving GitHub Copilot-like tab completions.  
   
 Offers **Suggestion Streaming** which will stream the completions into your editor as they are generated from the model.
 
 ### Optimizations:
 - [x] Debouncing for subsequent completion requests to avoid overflows of Ollama requests which lead to CPU over-utilization.
-- [x] Full control over triggers, using textChange events instead of NeoVim client requests.
+- [x] Full control over triggers, using textChange events instead of Neovim client requests.
 ### Features
 - [x] Language server which can provide code completions from an Ollama model
 - [x] Ghost text completions which can be inserted into the editor
