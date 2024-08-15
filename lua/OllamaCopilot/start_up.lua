@@ -14,9 +14,9 @@ local configs = require 'lspconfig.configs'
 
 
 
+
 local M = {}
 
--- TODO : add demo gif which shows tabbing the completion
 -- TODO : smoother experience (no flickering) (need to not block the main thread with completion, or add client side logic to handle changes)
 -- Default configuration
 local default_config = {
@@ -90,7 +90,12 @@ function M.setup(user_config)
                 cmd = {config.python_command, cur_file .. "python/ollama_lsp.py"},
                 filetypes = config.filetypes,
                 root_dir = function(fname)
-                    return lspconfig.util.find_git_ancestor(fname)
+                    local potential_root = lspconfig.util.find_git_ancestor(fname)
+                    if potential_root then
+                        return potential_root
+                    else
+                        return lspconfig.util.path.dirname(fname)
+                    end
                 end,
                 settings = {},
                 init_options = {
