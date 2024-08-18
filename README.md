@@ -38,7 +38,8 @@ ollama pull <Model name>
 ### Using a plugin manager
 Lazy:
 ```lua
-{"Jacob411/Ollama-Copilot"}
+-- Default configuration
+{"Jacob411/Ollama-Copilot", opts={}}
 ```
 ```lua
 -- Custom configuration (defaults shown)
