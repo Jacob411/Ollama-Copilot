@@ -16,6 +16,7 @@ local configs = require 'lspconfig.configs'
 
 
 
+
 local M = {}
 
 -- TODO : smoother experience (no flickering) (need to not block the main thread with completion, or add client side logic to handle changes)
@@ -77,7 +78,9 @@ end
 
 
 function M.setup(user_config)
-    if not user_config then
+    print('Setting up Ollama Copilot')
+    print('User config:', vim.inspect(user_config))
+    if user_config == nil then
         user_config = {}
     end
     local cur_file = debug.getinfo(1, 'S').source
