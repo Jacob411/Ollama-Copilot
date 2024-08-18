@@ -15,6 +15,7 @@ local configs = require 'lspconfig.configs'
 
 
 
+
 local M = {}
 
 -- TODO : smoother experience (no flickering) (need to not block the main thread with completion, or add client side logic to handle changes)
@@ -76,12 +77,15 @@ end
 
 
 function M.setup(user_config)
+    if not user_config then
+        user_config = {}
+    end
     local cur_file = debug.getinfo(1, 'S').source
     -- strip the leading '@' and lua/OllamaCopilot/start_up.lua from the end
 
+    print('Starting Ollama Copilot')
     cur_file = cur_file:sub(2, -1):sub(1, -31)
 
-    print(cur_file)
     local config = merge_config(user_config)
 
     if not configs.ollama_lsp then
