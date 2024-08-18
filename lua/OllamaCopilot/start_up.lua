@@ -78,8 +78,6 @@ end
 
 
 function M.setup(user_config)
-    print('Setting up Ollama Copilot')
-    print('User config:', vim.inspect(user_config))
     if user_config == nil then
         user_config = {}
     end
