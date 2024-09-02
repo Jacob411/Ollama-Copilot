@@ -36,10 +36,10 @@ class OllamaServer:
         def initialize(params: types.InitializeParams):
             return self.on_initialize(params)
         
-        # @self.server.feature(types.TEXT_DOCUMENT_COMPLETION)
-        # def completions(params: types.CompletionParams):
-        #     return self.on_completion(params)
-        # 
+        @self.server.feature(types.TEXT_DOCUMENT_COMPLETION)
+        def completions(params: types.CompletionParams):
+            return []
+
         @self.server.feature(types.TEXT_DOCUMENT_DID_CHANGE)
         def change(params: types.DidChangeTextDocumentParams):
             return self.on_change(params)

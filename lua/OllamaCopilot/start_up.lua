@@ -17,12 +17,14 @@ local configs = require 'lspconfig.configs'
 
 
 
+
+
 local M = {}
 
 -- TODO : smoother experience (no flickering) (need to not block the main thread with completion, or add client side logic to handle changes)
 -- Default configuration
 local default_config = {
-    model_name = "deepseek-coder:base",
+    model_name = "deepseek-coder",
     stream_suggestion = false,
     python_command = "python3",
     filetypes = {'python', 'lua','vim', "markdown"},
