@@ -5,8 +5,12 @@ local ghost_text = require 'OllamaCopilot.ghost_text'
 local ollama_client = require 'OllamaCopilot.lsp_client'
 local configs = require 'lspconfig.configs'
 
--- TODO : update tabs to be uniform at the client side
--- TODO : update keymaps for tabbing
+-- TODO : update tabs and spacing to be uniform at the client side
+-- TODO : Disable completion middle of line
+-- TODO : add back multiline completion
+
+
+
 
 
 
@@ -31,7 +35,7 @@ local default_config = {
     ollama_model_opts = {
         num_predict = 40,
         temperature = 0.1,
-        stop = {'\n'}
+        --stop = {'\n'}
     },
     keymaps = {
         suggestion = '<leader>os',

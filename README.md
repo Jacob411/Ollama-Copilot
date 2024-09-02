@@ -53,7 +53,6 @@ Lazy:
     ollama_model_opts = {
         num_predict = 40,
         temperature = 0.1,
-        stop = {'\n'}
     },
     keymaps = {
         suggestion = '<leader>os',

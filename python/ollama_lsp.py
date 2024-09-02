@@ -11,7 +11,7 @@ import asyncio
 
 
 # ------------------ LSP Server ----------------
-def send_log(message, line, col, file=""): 
+def send_log(message, line, col, file="f/na"): 
     #headers = {'Content-type': 'application/json'}
     #requests.post("http://localhost:8000",headers=headers, json={"message": message, "file": file.split('/')[-1], "line" : line, "col" : col})
     return
@@ -79,7 +79,6 @@ class OllamaServer:
 
     async def on_completion(self, params: types.CompletionParams):
 
-        send_log(f"Completion requested", params.position.line, params.position.character, params.text_document.uri)
         document = self.server.workspace.get_text_document(params.text_document.uri)
         lines = document.lines
         suggestion_stream = async_generator_wrapper(self.engine.complete(lines, params.position.line, params.position.character))
@@ -90,9 +89,6 @@ class OllamaServer:
         async for chunk in suggestion_stream:
             if self.cancel_suggestion:
                 self.cancel_suggestion = False
-                send_log("Suggestion cancelled",
-                         params.position.line,
-                         params.position.character, params.text_document.uri)
                 return []
 
             self.curr_suggestion['suggestion'] += chunk['response']
@@ -119,15 +115,23 @@ class OllamaServer:
                              suggestion_type='completion')
         
         send_log(f"{timing_str}: {self.curr_suggestion['suggestion']}",
-                    params.position.line,
-                    params.position.character,
-                    params.text_document.uri)
+                   params.position.line,
+                   params.position.character,
+                   params.text_document.uri)
         
         return [] 
          
     def on_change(self, params: types.DidChangeTextDocumentParams):
         change = params.content_changes[0]
-        send_log(f"Change: {change.text}", change.range.start.line, change.range.start.character, params.text_document.uri)
+        #send_log(f"Change: {change.text}", change.range.start.line, change.range.start.character, params.text_document.uri)
+
+        lines = self.server.workspace.get_text_document(params.text_document.uri).lines
+        line = lines[change.range.start.line][change.range.start.character + 1:]
+        contains_non_whitespace = bool(re.search(r'[^\s]', line))
+
+        if contains_non_whitespace:
+            return
+
         if change.text == self.curr_suggestion['suggestion'][0:len(change.text)] and len(change.text) > 0: 
             self.curr_suggestion['suggestion'] = self.curr_suggestion['suggestion'][len(change.text):]
             self.curr_suggestion['character'] += len(change.text)
