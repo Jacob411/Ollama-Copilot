@@ -151,6 +151,11 @@ function M.setup(user_config)
             vim.api.nvim_create_user_command("OllamaSuggestion", ollama_client.request_completions, {desc = "Get Ollama Suggestion"})
             vim.api.nvim_create_user_command("OllamaAccept", ghost_text.accept_first_extmark_lines, {desc = "Accepts displayed Ollama Suggestion"})
             vim.api.nvim_create_user_command("OllamaReject", ghost_text.delete_first_extmark, {desc = "Rejects displayed Ollama Suggestion"})
+            vim.keymap.set("i", config.keymaps.insert_accept,
+                function()
+                    tab_complete()
+                end
+            )
         end,
         handlers = {
             ["textDocument/completion"] = function(err, result, ctx, config)
@@ -193,11 +198,7 @@ function M.setup(user_config)
 
     -- Keymaps
     vim.api.nvim_create_user_command("DisableOllamaCopilot", function() disable_plugin() end, {desc = "Disables Ollama Copilot"})
-    vim.keymap.set("i", config.keymaps.insert_accept,
-        function()
-            tab_complete()
-        end
-    )
+  
     vim.api.nvim_set_keymap('n', config.keymaps.suggestion, '<Cmd>OllamaSuggestion<CR>', { noremap = true })
     vim.api.nvim_set_keymap('n', config.keymaps.reject, '<Cmd>OllamaReject<CR>', { noremap = true })
 
