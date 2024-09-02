@@ -24,7 +24,7 @@ local M = {}
 -- TODO : smoother experience (no flickering) (need to not block the main thread with completion, or add client side logic to handle changes)
 -- Default configuration
 local default_config = {
-    model_name = "deepseek-coder",
+    model_name = "deepseek-coder:base",
     stream_suggestion = false,
     python_command = "python3",
     filetypes = {'python', 'lua','vim', "markdown"},
@@ -173,10 +173,6 @@ function M.setup(user_config)
 
 
     
-    
-    
-
-    
 
 
     vim.api.nvim_command('augroup OllamaCopilot')
@@ -185,6 +181,13 @@ function M.setup(user_config)
         pattern = "*",
         callback = function()
            ghost_text.delete_first_extmark()
+        end,
+    })
+    -- create autocmd to delete the ghost text when the cursor moves
+    vim.api.nvim_create_autocmd("CursorMoved", {
+        pattern = "*",
+        callback = function()
+            ghost_text.delete_first_extmark()
         end,
     })
 

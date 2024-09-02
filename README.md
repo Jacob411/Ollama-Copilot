@@ -46,7 +46,7 @@ Lazy:
 {
   'jacob411/Ollama-Copilot',
   opts = {
-    model_name = "deepseek-coder",
+    model_name = "deepseek-coder:base",
     stream_suggestion = false,
     python_command = "python3",
     filetypes = {'python', 'lua','vim', "markdown"},
