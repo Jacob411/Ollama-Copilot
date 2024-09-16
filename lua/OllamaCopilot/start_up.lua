@@ -6,9 +6,6 @@ local ollama_client = require 'OllamaCopilot.lsp_client'
 local configs = require 'lspconfig.configs'
 
 -- TODO : update tabs and spacing to be uniform at the client side
--- TODO : Disable completion middle of line
--- TODO : add back multiline completion
-
 
 
 
@@ -146,6 +143,7 @@ function M.setup(user_config)
     end
 
 
+    
 
 
     
@@ -200,7 +198,11 @@ function M.setup(user_config)
         end,
     })
 
-    -- Keymaps
+    
+    
+
+
+
     vim.api.nvim_create_user_command("DisableOllamaCopilot", function() disable_plugin() end, {desc = "Disables Ollama Copilot"})
   
     vim.api.nvim_set_keymap('n', config.keymaps.suggestion, '<Cmd>OllamaSuggestion<CR>', { noremap = true })
