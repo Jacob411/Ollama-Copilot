@@ -168,7 +168,6 @@ function M.setup(user_config)
                 local opts = ghost_text.build_opts_from_text(result['completion']['total'])
                 local cursor_line, cursor_col = unpack(vim.api.nvim_win_get_cursor(0))
 
-                print(result['completion']['total'])
                 ghost_text.add_extmark(result['line'], result['character'], opts)
         
             end,
