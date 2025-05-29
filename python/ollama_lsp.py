@@ -50,7 +50,7 @@ class OllamaServer:
         send_log(f"Initialized, Opts: {params.initialization_options}", 0, 0)
         init_options = params.initialization_options
 
-        self.engine = CompletionEngine(init_options.get('model_name', "deepseek-coder:base"), options=init_options.get('ollama_model_opts', {}))
+        self.engine = CompletionEngine(init_options.get('model_name', "deepseek-coder:base"), init_options.get("ollama_url", None), options=init_options.get('ollama_model_opts', {}))
         self.stream_suggestion = params.initialization_options.get('stream_suggestion', False)
 
         return {
