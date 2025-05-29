@@ -1,9 +1,9 @@
 import ollama
 from ollama import generate
 class CompletionEngine:
-    def __init__(self, model : str, options = {}):
+    def __init__(self, model : str, client_url="http://localhost:11434", options = {}):
         self.model = model
-        self.client = ollama.Client("http://localhost:11434")
+        self.client = ollama.Client(client_url)
         self.options = options
 
     def complete(self, lines, line, character):

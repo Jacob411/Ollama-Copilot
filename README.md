@@ -47,6 +47,7 @@ Lazy:
   'jacob411/Ollama-Copilot',
   opts = {
     model_name = "deepseek-coder:base",
+    ollama_url = "http://localhost:11434", -- URL for Ollama server, Leave blank to use default local instance.
     stream_suggestion = false,
     python_command = "python3",
     filetypes = {'python', 'lua','vim', "markdown"},
