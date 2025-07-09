@@ -51,6 +51,7 @@ Lazy:
     stream_suggestion = false,
     python_command = "python3",
     filetypes = {'python', 'lua','vim', "markdown"},
+    capabilities = nil, -- LSP capabilities, auto-detected if not provided
     ollama_model_opts = {
         num_predict = 40,
         temperature = 0.1,
@@ -64,6 +65,28 @@ Lazy:
 },
 ```
 For more Ollama customization, see [github.com/ollama/ollama/blob/main/docs/modelfile.md](https://github.com/ollama/ollama/blob/main/docs/modelfile.md)
+
+### LSP Capabilities Configuration
+
+The plugin automatically detects and configures LSP capabilities for optimal completion support:
+
+1. **Auto-detection (default)**: If `capabilities` is not specified, the plugin will:
+   - Try to use `cmp_nvim_lsp.default_capabilities()` if nvim-cmp is installed
+   - Fall back to `vim.lsp.protocol.make_client_capabilities()` if nvim-cmp is not available
+
+2. **Custom capabilities**: You can override the auto-detection by providing your own capabilities:
+   ```lua
+   opts = {
+     capabilities = require('cmp_nvim_lsp').default_capabilities(),
+     -- or use custom capabilities
+     capabilities = vim.tbl_deep_extend('force',
+       vim.lsp.protocol.make_client_capabilities(),
+       { your_custom_capability = true }
+     )
+   }
+   ```
+
+This ensures backward compatibility while allowing the plugin to work without requiring nvim-cmp as a dependency.
 
 ## Usage
 Ollama copilot language server will attach when you enter a buffer and can be viewed using:
