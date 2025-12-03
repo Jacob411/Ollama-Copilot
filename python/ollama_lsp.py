@@ -1,4 +1,4 @@
-from pygls.server import LanguageServer
+from pygls.lsp.server import LanguageServer
 from lsprotocol import types
 #import requests
 from completion_engine import CompletionEngine
@@ -158,10 +158,10 @@ class OllamaServer:
         return
             
     def clear_suggestion(self):
-        self.server.send_notification('$/clearSuggestion',{'message' : "clear current"})
+        self.server.protocol.notify('$/clearSuggestion',{'message' : "clear current"})
 
     def send_suggestion(self, suggestion, line, col, suggestion_type='miscellaneous'):
-        self.server.send_notification('$/tokenStream', {
+        self.server.protocol.notify('$/tokenStream', {
             'line' : line,
             'character' : col,
             'completion': {
