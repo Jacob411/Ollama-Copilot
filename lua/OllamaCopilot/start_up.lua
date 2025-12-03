@@ -1,6 +1,5 @@
 
 local lspconfig = require 'lspconfig'
-local capabilities = require('cmp_nvim_lsp').default_capabilities()
 local ghost_text = require 'OllamaCopilot.ghost_text'
 local ollama_client = require 'OllamaCopilot.lsp_client'
 local configs = require 'lspconfig.configs'
@@ -29,6 +28,7 @@ local default_config = {
     stream_suggestion = false,
     python_command = "python3",
     filetypes = {'python', 'lua','vim', "markdown"},
+    capabilities = nil, -- Will be set automatically or can be overridden by user
     ollama_model_opts = {
         num_predict = 40,
         temperature = 0.1,
@@ -91,6 +91,20 @@ function M.setup(user_config)
     cur_file = cur_file:sub(2, -1):sub(1, -31)
 
     local config = merge_config(user_config)
+
+    -- Handle capabilities: use user-provided capabilities if available,
+    -- otherwise try to use cmp_nvim_lsp if installed, fallback to default
+    local capabilities
+    if config.capabilities then
+        capabilities = config.capabilities
+    else
+        local ok, cmp_nvim_lsp = pcall(require, 'cmp_nvim_lsp')
+        if ok then
+            capabilities = cmp_nvim_lsp.default_capabilities()
+        else
+            capabilities = vim.lsp.protocol.make_client_capabilities()
+        end
+    end
 
     if not configs.ollama_lsp then
         configs.ollama_lsp = {
